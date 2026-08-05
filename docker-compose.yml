@@ -1,0 +1,16 @@
+services:
+  swim-academy:
+    build: .
+    container_name: swim-academy
+    ports:
+      - "${PORT:-8080}:8000"
+    volumes:
+      - ./data:/app/data
+    networks:
+      - swim-net
+    restart: unless-stopped
+
+networks:
+  swim-net:
+    name: swim-academy-net
+    driver: bridge
