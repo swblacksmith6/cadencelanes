@@ -11,7 +11,7 @@ class Settings:
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "dev")
     JWT_SECRET: str = os.getenv("JWT_SECRET", DEV_JWT_SECRET)
     JWT_ALGORITHM: str = "HS256"
-    JWT_EXPIRY_HOURS: int = 24
+    JWT_EXPIRY_DAYS: int = int(os.getenv("JWT_EXPIRY_DAYS", "30"))
     OTP_EXPIRY_MINUTES: int = 5
     OTP_LENGTH: int = 6
     OTP_MAX_REQUESTS_PER_HOUR: int = 5

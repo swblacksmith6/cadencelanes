@@ -5,17 +5,27 @@ from sqlalchemy.orm import Session
 
 from config import settings
 from db.club_models import Coach
+from db.control_models import User
+from db.engine import get_control_db
 
 security = HTTPBearer(auto_error=False)
 
 
-def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    control_db: Session = Depends(get_control_db),
+) -> dict:
     if credentials is None:
         raise HTTPException(status_code=401, detail="Not authenticated")
     try:
-        return jwt.decode(credentials.credentials, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
+        claims = jwt.decode(credentials.credentials, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
+    # Tokens live for days, so a deactivated user must lose access immediately.
+    user = control_db.query(User).filter_by(id=claims.get("user_id")).first()
+    if user is None or not user.is_active:
+        raise HTTPException(status_code=401, detail="Account is no longer active")
+    return claims
 
 
 def require_admin(user: dict = Depends(get_current_user)) -> dict:

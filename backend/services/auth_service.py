@@ -52,6 +52,6 @@ def create_jwt(user: User) -> str:
         "role": user.role,
         "club_id": user.club_id,
         "name": user.name,
-        "exp": datetime.utcnow() + timedelta(hours=settings.JWT_EXPIRY_HOURS),
+        "exp": datetime.utcnow() + timedelta(days=settings.JWT_EXPIRY_DAYS),
     }
     return jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
