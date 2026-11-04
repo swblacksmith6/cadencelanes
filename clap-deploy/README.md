@@ -61,6 +61,44 @@ Notes learned the hard way:
 - Optional basic auth: put a `basic_auth { user hash }` block in `/opt/proxy/auth.caddy` and import it
   in the Caddyfile. Generate the hash with `caddy hash-password`. The file stays on the host only.
 
+## After a code change: what to do on the production machine
+
+Normally nothing is done by hand on the host. Deploy from your laptop; the host only needs a look afterwards.
+
+1. Merge to `main` and pull locally, so you deploy exactly what is in GitHub.
+2. Take a safety backup first if the change touches data or models (about 10 seconds):
+   ```bash
+   ssh deploy@<host> 'sudo /usr/local/sbin/clap-backup.sh'
+   ```
+3. Deploy: `clap-deploy/deploy.sh <host>` (app), plus `proxy`, `backup` or `pkndr` when those files changed.
+   This rebuilds the image and recreates the container. Data lives in a Docker volume and survives.
+   Expect a few seconds of downtime while the container restarts.
+4. Check it came up healthy and is quiet (logs are ERROR only):
+   ```bash
+   ssh deploy@<host> 'sudo docker ps --format "table {{.Names}}\t{{.Status}}"; sudo docker logs --tail 20 cadencelanes'
+   ```
+   `(healthy)` is the signal. Then open the site and log in once.
+5. If it is broken, roll back: `git checkout <last-good-commit>`, run `deploy.sh <host>` again. If data
+   was damaged, restore from the latest archive (see Backups).
+
+Which kind of change needs what:
+
+| Change | Action |
+|---|---|
+| Backend or frontend code | `deploy.sh <host>` |
+| New env var or changed secret | Edit `/opt/apps/cadencelanes/.env` on the host, then `cd /opt/apps/cadencelanes && sudo docker compose -f docker-compose.prod.yml up -d` (no rebuild needed) |
+| `docker-compose.prod.yml` | `deploy.sh <host>` |
+| `proxy/Caddyfile` | `deploy.sh <host> proxy` (recreates Caddy; a few seconds of downtime) |
+| Backup script or schedule | `deploy.sh <host> backup` |
+| New required env var in code | Add it to the host `.env` before deploying, or the container refuses to start and the old one keeps running |
+| Database model change | Existing tables are not migrated (the app only runs `create_all`): new tables appear automatically, but a new column on an existing table needs a manual `ALTER TABLE` on the live database files. Back up first. |
+
+Debug temporarily with more logs: set `LOG_LEVEL=INFO` in the host `.env`, run the `up -d` command above,
+and set it back to `ERROR` afterwards.
+
+Routine host care: security updates install themselves (unattended-upgrades). Now and then check
+`ls /var/run/reboot-required`; if it exists, reboot in a quiet window. Containers restart on boot.
+
 ## First-time host setup
 
 1. Create the `deploy` user with an SSH key and passwordless sudo.
@@ -70,7 +108,7 @@ Notes learned the hard way:
 
 ## Backups
 
-`/usr/local/sbin/clap-backup.sh` runs from `/etc/cron.d/clap-backup` at 03:15 UTC, keeps 14 days of
+`/usr/local/sbin/clap-backup.sh` runs from `/etc/cron.d/clap-backup` at 20:30 UTC (02:00 IST), keeps 14 days of
 `clap-data-<timestamp>.tar.gz` in `/home/deploy/backups` (mode 600). Pull them elsewhere:
 
 ```bash
