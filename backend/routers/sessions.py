@@ -3,12 +3,13 @@ from datetime import date, datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session as DBSession
 
-from db.club_models import Attendance, Session
+from db.club_models import Attendance, Session, Timing
 from middleware.auth import get_current_coach, require_coach, require_head_coach
 from routers.deps import club_db
 from schemas.attendance import AttendanceUpdate
 from schemas.session import SessionCreate
 from services.session_service import create_session_with_attendance
+from services.timing_service import recompute_personal_best
 
 router = APIRouter()
 
@@ -82,7 +83,11 @@ def create_session(body: SessionCreate, db: DBSession = Depends(club_db), user: 
 @router.delete("/{session_id}", dependencies=[Depends(require_head_coach)])
 def delete_session(session_id: str, db: DBSession = Depends(club_db)):
     s = _get_session(db, session_id)
+    keys = {(t.student_id, t.swim_style_id, t.distance_event_id) for t in db.query(Timing).filter_by(session_id=session_id)}
     db.delete(s)  # cascades to attendance + timings
+    db.flush()
+    for key in keys:  # personal bests may have come from this session's timings
+        recompute_personal_best(db, *key)
     db.commit()
     return {"message": "Session deleted"}
 

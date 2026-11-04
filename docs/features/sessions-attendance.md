@@ -19,4 +19,4 @@ frontend `SessionList.jsx`, `SessionCreate.jsx`, `AttendanceView.jsx`. Tests: `b
 ## Gotchas
 - A student added after a session was created has **no attendance row** for that session; it will not count toward their attendance percentage.
 - `PUT attendance` silently ignores student ids that have no row in the session.
-- Deleting a session also deletes its timings, but personal bests are not recomputed (see [timings-pbs.md](timings-pbs.md)).
+- Deleting a session also deletes its timings and recomputes the affected personal bests (see [timings-pbs.md](timings-pbs.md)).

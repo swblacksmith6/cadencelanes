@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session as DBSession
 
-from db.club_models import PersonalBest, Session, Timing
+from db.club_models import DistanceEvent, PersonalBest, Session, Student, SwimStyle, Timing
 from middleware.auth import get_current_coach, require_coach
 from routers.deps import club_db
 from schemas.timing import TimingCreate, TimingUpdate
-from services.timing_service import record_timing
+from services.timing_service import record_timing, recompute_personal_best
 
 router = APIRouter(dependencies=[Depends(require_coach)])
 
@@ -32,6 +32,13 @@ def _timing_out(t: Timing) -> dict:
 def create_timing(body: TimingCreate, db: DBSession = Depends(club_db), user: dict = Depends(require_coach)):
     if db.get(Session, body.session_id) is None:
         raise HTTPException(status_code=404, detail="Session not found")
+    for model, key, label in (
+        (Student, body.student_id, "Student"),
+        (SwimStyle, body.swim_style_id, "Swim style"),
+        (DistanceEvent, body.distance_event_id, "Distance"),
+    ):
+        if db.get(model, key) is None:
+            raise HTTPException(status_code=404, detail=f"{label} not found")
     coach = get_current_coach(db, user)
     timing, is_new_pb, improvement = record_timing(db, body, coach.id)
     out = _timing_out(timing)
@@ -82,6 +89,8 @@ def update_timing(timing_id: str, body: TimingUpdate, db: DBSession = Depends(cl
         t.time_seconds = body.time_seconds
     if body.notes is not None:
         t.notes = body.notes
+    db.flush()
+    recompute_personal_best(db, t.student_id, t.swim_style_id, t.distance_event_id)
     db.commit()
     return _timing_out(t)
 
@@ -91,6 +100,9 @@ def delete_timing(timing_id: str, db: DBSession = Depends(club_db)):
     t = db.get(Timing, timing_id)
     if t is None:
         raise HTTPException(status_code=404, detail="Timing not found")
+    key = (t.student_id, t.swim_style_id, t.distance_event_id)
     db.delete(t)
+    db.flush()
+    recompute_personal_best(db, *key)
     db.commit()
     return {"message": "Timing deleted"}

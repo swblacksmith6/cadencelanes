@@ -18,5 +18,5 @@ The date range filters **timing trends only**. Response (`build_progress_report`
 
 ## Gotchas
 - Attendance and streak only count sessions that have an attendance row for the student.
-- PBs shown are the stored `personal_bests` rows, so they inherit the edit/delete caveat in [timings-pbs.md](timings-pbs.md).
-- There is no backend test for the report yet.
+- PBs shown are the stored `personal_bests` rows, kept correct by [timings-pbs.md](timings-pbs.md).
+- Tests: `backend/tests/test_progress.py` (attendance and streak, trends and date filter, PB improvement, skill ratings, notes).

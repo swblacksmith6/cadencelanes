@@ -53,3 +53,41 @@ def record_timing(db: Session, data, coach_id: str) -> tuple[Timing, bool, float
     db.commit()
     db.refresh(timing)
     return timing, is_new_pb, improvement
+
+
+def recompute_personal_best(db: Session, student_id: str, swim_style_id: str, distance_event_id: str) -> None:
+    """Rebuild one PB row from the remaining timings (call after a timing is edited or removed).
+
+    Replays the same rule as record_timing: the first timing sets the PB and a strictly faster
+    later timing replaces it, remembering the previous best. Does not commit.
+    """
+    timings = (
+        db.query(Timing)
+        .filter_by(student_id=student_id, swim_style_id=swim_style_id, distance_event_id=distance_event_id)
+        .order_by(Timing.created_at.asc(), Timing.id.asc())
+        .all()
+    )
+    pb = db.query(PersonalBest).filter_by(
+        student_id=student_id, swim_style_id=swim_style_id, distance_event_id=distance_event_id,
+    ).first()
+
+    if not timings:
+        if pb is not None:
+            db.delete(pb)
+        return
+
+    best, previous = None, None
+    for t in timings:
+        if best is None:
+            best = t
+        elif t.time_seconds < best.time_seconds:
+            previous, best = best.time_seconds, t
+
+    if pb is None:
+        pb = PersonalBest(student_id=student_id, swim_style_id=swim_style_id, distance_event_id=distance_event_id,
+                          best_time_seconds=best.time_seconds, achieved_at=best.created_at)
+        db.add(pb)
+    pb.best_time_seconds = best.time_seconds
+    pb.previous_best = previous
+    pb.timing_id = best.id
+    pb.achieved_at = best.created_at
