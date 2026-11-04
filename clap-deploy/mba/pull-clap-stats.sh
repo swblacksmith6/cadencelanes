@@ -2,7 +2,7 @@
 # Run on the monitoring machine (the MacBook Air). Pulls clap's stats folder into a local archive.
 # Read-only: the key it uses is restricted on clap to `rrsync -ro /var/lib/clap-monitor`.
 #
-#   ~/bin/pull-clap-stats.sh            # normally run from cron every 30 minutes
+#   ~/bin/pull-clap-stats.sh            # normally run from cron every 10 minutes
 #
 # Results in $DEST:
 #   stats-YYYY-MM-DD.csv, containers-YYYY-MM-DD.csv   full history, never pruned here

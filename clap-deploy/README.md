@@ -110,7 +110,7 @@ No alert credentials or outbound calls live on clap.
 - Flags: `disk_high`, `inodes_high`, `mem_high`, `swap_active`, `load_high`, `container_down`,
   `backup_stale`, `cert_expiring`, `cert_unreadable`, `reboot_required`. `ok` is true when there are none.
 - Install or update: `clap-deploy/deploy.sh <host> monitor`.
-- `mba/pull-clap-stats.sh` (run on the monitoring machine every 30 minutes, cron line in
+- `mba/pull-clap-stats.sh` (run on the monitoring machine every 10 minutes, cron line in
   `mba/clap-stats.cron`) rsyncs the folder into `~/clap-stats` and writes `pull-status.json`.
   A failed pull or a `latest.json` older than 15 minutes sets `ok:false` there, which also catches a dead clap.
 
