@@ -1,0 +1,67 @@
+# pkndr stack. No ports published; the shared proxy reaches pkndr-web on the "web" network.
+# Needs ./.env (PKNDR_* settings) next to this file.
+services:
+  pkndr-api:
+    build:
+      context: ./src
+      dockerfile: ../Dockerfile
+      target: api
+    image: pkndr-api:latest
+    container_name: pkndr-api
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      PKNDR_DATABASE_URL: sqlite:////data/pkndr.db
+    volumes:
+      - pkndr-data:/data
+    networks:
+      - internal
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 768m
+    pids_limit: 256
+
+  pkndr-web:
+    build:
+      context: ./src
+      dockerfile: ../Dockerfile
+      target: web
+      args:
+        VITE_GOOGLE_MAPS_API_KEY: ${VITE_GOOGLE_MAPS_API_KEY:-}
+        VITE_GOOGLE_MAP_ID: ${VITE_GOOGLE_MAP_ID:-}
+    image: pkndr-web:latest
+    container_name: pkndr-web
+    restart: unless-stopped
+    depends_on:
+      - pkndr-api
+    volumes:
+      - ./Caddyfile.web:/etc/caddy/Caddyfile:ro
+    networks:
+      - internal
+      - web
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /config
+      - /data
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 128m
+    pids_limit: 128
+
+volumes:
+  pkndr-data:
+
+networks:
+  internal: {}
+  web:
+    external: true

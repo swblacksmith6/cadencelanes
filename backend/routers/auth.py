@@ -1,11 +1,16 @@
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from config import settings
 from db.control_models import Club, User
 from db.engine import get_control_db
 from schemas.auth import OTPRequest, OTPVerify, TokenResponse
 from schemas.club import ClubRegister
 from services import auth_service
+
+logger = logging.getLogger("uvicorn.error")
 
 router = APIRouter()
 register_router = APIRouter()
@@ -16,9 +21,15 @@ def request_otp(body: OTPRequest, db: Session = Depends(get_control_db)):
     user = db.query(User).filter_by(phone=body.phone, is_active=True).first()
     if user is None:
         raise HTTPException(status_code=404, detail="Phone not registered")
-    code = auth_service.generate_otp(db, body.phone)
-    # MVP only: OTP returned in response instead of SMS
-    return {"message": "OTP sent", "otp": code}
+    try:
+        code = auth_service.generate_otp(db, body.phone)
+    except auth_service.OTPRateLimited:
+        raise HTTPException(status_code=429, detail="Too many OTP requests, try again later")
+    # No SMS provider yet: the code is logged for the operator, and returned only when OTP_IN_RESPONSE (dev).
+    logger.info("OTP for ...%s: %s", body.phone[-4:], code)
+    if settings.OTP_IN_RESPONSE:
+        return {"message": "OTP sent", "otp": code}
+    return {"message": "OTP sent"}
 
 
 @router.post("/verify-otp", response_model=TokenResponse)

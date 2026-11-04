@@ -1,4 +1,4 @@
-import random
+import secrets
 from datetime import datetime, timedelta
 
 from jose import jwt
@@ -8,8 +8,16 @@ from config import settings
 from db.control_models import OTPCode, User
 
 
+class OTPRateLimited(Exception):
+    pass
+
+
 def generate_otp(db: Session, phone: str) -> str:
-    code = "".join(random.choices("0123456789", k=settings.OTP_LENGTH))
+    since = datetime.utcnow() - timedelta(hours=1)
+    recent = db.query(OTPCode).filter(OTPCode.phone == phone, OTPCode.created_at > since).count()
+    if recent >= settings.OTP_MAX_REQUESTS_PER_HOUR:
+        raise OTPRateLimited()
+    code = "".join(secrets.choice("0123456789") for _ in range(settings.OTP_LENGTH))
     db.add(OTPCode(
         phone=phone,
         code=code,
@@ -26,7 +34,11 @@ def verify_otp(db: Session, phone: str, code: str) -> bool:
         .order_by(OTPCode.created_at.desc())
         .first()
     )
-    if otp is None or otp.code != code:
+    if otp is None or otp.attempts >= settings.OTP_MAX_ATTEMPTS:
+        return False
+    if not secrets.compare_digest(otp.code, code):
+        otp.attempts += 1
+        db.commit()
         return False
     otp.is_used = True
     db.commit()

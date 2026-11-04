@@ -1,0 +1,30 @@
+(secure) {
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+	request_body {
+		max_size 10MB
+	}
+}
+
+# Both apps sit behind basic auth until they have a real SMS OTP sender.
+# auth.caddy holds the "basic_auth { user hash }" block and lives only on the server.
+(gate) {
+	import /etc/caddy/auth.caddy
+}
+
+cl.lusidlogix.com {
+	import secure
+	import gate
+	reverse_proxy cadencelanes:8000
+}
+
+pd.lusidlogix.com {
+	import secure
+	import gate
+	reverse_proxy pkndr-web:80
+}

@@ -30,11 +30,19 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="SwimAcademy API", version="1.0.0", lifespan=lifespan)
+_dev = settings.ENVIRONMENT == "dev"
+app = FastAPI(
+    title="SwimAcademy API",
+    version="1.0.0",
+    lifespan=lifespan,
+    docs_url="/docs" if _dev else None,
+    redoc_url=None,
+    openapi_url="/openapi.json" if _dev else None,
+)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # tighten in production
+    allow_origins=settings.CORS_ORIGINS or (["*"] if settings.ENVIRONMENT == "dev" else []),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

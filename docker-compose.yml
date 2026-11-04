@@ -5,7 +5,10 @@ services:
     ports:
       - "${PORT:-8080}:8000"
     volumes:
-      - ./data:/app/data
+      - ./data:/data
+    environment:
+      ENVIRONMENT: dev
+      OTP_IN_RESPONSE: "true"
     networks:
       - swim-net
     restart: unless-stopped

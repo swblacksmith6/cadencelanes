@@ -116,6 +116,8 @@ def login(phone):
     s, r = call("POST", "/auth/request-otp", {"phone": phone})
     if s != 200:
         raise SystemExit(f"Cannot log in {phone}: {r}")
+    if "otp" not in r:
+        raise SystemExit("The API did not return the OTP. Start it with OTP_IN_RESPONSE=true (dev only).")
     s, r = call("POST", "/auth/verify-otp", {"phone": phone, "code": r["otp"]})
     return r["access_token"], r["user"]
 
@@ -128,15 +130,22 @@ def main():
         "head_coach_phone": HEAD_COACH_PHONE,
     })
     if s == 409:
-        print("Demo club already exists — aborting (nothing changed).")
-        return
-    admin, _ = login("9999999999")
-    s, clubs = call("GET", "/admin/clubs?status=pending", token=admin)
-    club_id = next(c["id"] for c in clubs if c["head_coach_phone"] == HEAD_COACH_PHONE)
-    call("POST", f"/admin/clubs/{club_id}/approve", token=admin)
-    head, user = login(HEAD_COACH_PHONE)
-    cid = user["club_id"]
-    print(f"Club approved: Aqua Stars Swim Academy")
+        # Club exists: resume only if an earlier run died before creating students.
+        head, user = login(HEAD_COACH_PHONE)
+        cid = user["club_id"]
+        s, existing = call("GET", f"/club/{cid}/students", token=head)
+        if existing:
+            print("Demo club already exists with students — aborting (nothing changed).")
+            return
+        print("Demo club exists but has no students — resuming seed.")
+    else:
+        admin, _ = login("9999999999")
+        s, clubs = call("GET", "/admin/clubs?status=pending", token=admin)
+        club_id = next(c["id"] for c in clubs if c["head_coach_phone"] == HEAD_COACH_PHONE)
+        call("POST", f"/admin/clubs/{club_id}/approve", token=admin)
+        head, user = login(HEAD_COACH_PHONE)
+        cid = user["club_id"]
+        print("Club approved: Aqua Stars Swim Academy")
 
     call("POST", f"/club/{cid}/coaches", {"name": "Divya Nair", "phone": ASSISTANT_PHONE}, token=head)
 
