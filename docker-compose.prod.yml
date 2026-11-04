@@ -10,6 +10,9 @@ services:
     environment:
       ENVIRONMENT: prod
       JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      MSG91_AUTH_KEY: ${MSG91_AUTH_KEY:?set MSG91_AUTH_KEY in .env}
+      MSG91_OTP_TEMPLATE_ID: ${MSG91_OTP_TEMPLATE_ID:?set MSG91_OTP_TEMPLATE_ID in .env}
+      SMS_APP_NAME: ${SMS_APP_NAME:-CadenceLanes}
       CORS_ORIGINS: ${CORS_ORIGINS:-}
       SUPER_ADMIN_PHONE: ${SUPER_ADMIN_PHONE:-9999999999}
     volumes:

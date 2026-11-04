@@ -8,7 +8,7 @@ from db.control_models import Club, User
 from db.engine import get_control_db
 from schemas.auth import OTPRequest, OTPVerify, TokenResponse
 from schemas.club import ClubRegister
-from services import auth_service
+from services import auth_service, sms_service
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -25,8 +25,13 @@ def request_otp(body: OTPRequest, db: Session = Depends(get_control_db)):
         code = auth_service.generate_otp(db, body.phone)
     except auth_service.OTPRateLimited:
         raise HTTPException(status_code=429, detail="Too many OTP requests, try again later")
-    # No SMS provider yet: the code is logged for the operator, and returned only when OTP_IN_RESPONSE (dev).
-    logger.info("OTP for ...%s: %s", body.phone[-4:], code)
+    if sms_service.sms_enabled():
+        try:
+            sms_service.send_otp(body.phone, code)
+        except sms_service.SMSSendError:
+            raise HTTPException(status_code=502, detail="Could not send the OTP SMS, try again")
+    else:
+        logger.info("OTP for ...%s: %s", body.phone[-4:], code)
     if settings.OTP_IN_RESPONSE:
         return {"message": "OTP sent", "otp": code}
     return {"message": "OTP sent"}

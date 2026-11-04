@@ -1,0 +1,6 @@
+# Local run of the production stack: docker compose -f docker-compose.prod.yml -f docker-compose.local-prod.yml up -d --build
+# One-time: docker network create web
+services:
+  cadencelanes:
+    ports:
+      - "${PORT:-8080}:8000"
