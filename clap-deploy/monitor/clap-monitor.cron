@@ -1,0 +1,4 @@
+SHELL=/bin/bash
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+# Every 5 minutes: take a snapshot of host and container stats into /var/lib/clap-monitor.
+*/5 * * * * root flock -n /run/clap-monitor.lock /usr/local/sbin/clap-monitor.sh

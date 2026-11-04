@@ -99,6 +99,28 @@ and set it back to `ERROR` afterwards.
 Routine host care: security updates install themselves (unattended-upgrades). Now and then check
 `ls /var/run/reboot-required`; if it exists, reboot in a quiet window. Containers restart on boot.
 
+## Monitoring
+
+Clap only collects stats; a separate machine pulls them and does the alerting (mail, Telegram).
+No alert credentials or outbound calls live on clap.
+
+- `monitor/clap-monitor.sh` runs every 5 minutes (`/etc/cron.d/clap-monitor`, root) and writes to
+  `/var/lib/clap-monitor`: `stats-YYYY-MM-DD.csv` (host), `containers-YYYY-MM-DD.csv` (per container),
+  and `latest.json` (newest sample plus computed `flags`). 30 days are kept on clap.
+- Flags: `disk_high`, `inodes_high`, `mem_high`, `swap_active`, `load_high`, `container_down`,
+  `backup_stale`, `cert_expiring`, `cert_unreadable`, `reboot_required`. `ok` is true when there are none.
+- Install or update: `clap-deploy/deploy.sh <host> monitor`.
+- `mba/pull-clap-stats.sh` (run on the monitoring machine every 30 minutes, cron line in
+  `mba/clap-stats.cron`) rsyncs the folder into `~/clap-stats` and writes `pull-status.json`.
+  A failed pull or a `latest.json` older than 15 minutes sets `ok:false` there, which also catches a dead clap.
+
+The pull uses its own SSH key, restricted on clap to read-only access of that one folder. In
+`/home/deploy/.ssh/authorized_keys` on clap, one line (public key from the monitoring machine):
+
+```
+restrict,command="/usr/bin/rrsync -ro /var/lib/clap-monitor" ssh-ed25519 AAAA... clap-monitor
+```
+
 ## First-time host setup
 
 1. Create the `deploy` user with an SSH key and passwordless sudo.

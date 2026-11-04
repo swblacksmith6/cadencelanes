@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Deploy to clap from a local checkout. Usage:
-#   clap-deploy/deploy.sh <host> [cadencelanes|proxy|backup|pkndr ...]
+#   clap-deploy/deploy.sh <host> [cadencelanes|proxy|backup|monitor|pkndr ...]
 # With no targets it deploys cadencelanes. Secrets (.env, auth files) are never synced.
 # Needs: passwordless sudo for the deploy user on <host>, docker installed (server/harden.sh).
 set -euo pipefail
@@ -45,6 +45,13 @@ for t in "${TARGETS[@]}"; do
         rssh 'sudo install -o root -g root -m 0750 /tmp/clap-backup.sh /usr/local/sbin/clap-backup.sh \
               && sudo install -o root -g root -m 0644 /tmp/clap-backup.cron /etc/cron.d/clap-backup \
               && rm /tmp/clap-backup.sh /tmp/clap-backup.cron'
+        ;;
+    monitor)
+        rsy "$HERE/monitor/clap-monitor.sh" "$HERE/monitor/clap-monitor.cron" "deploy@$HOST:/tmp/"
+        rssh 'sudo install -o root -g root -m 0750 /tmp/clap-monitor.sh /usr/local/sbin/clap-monitor.sh \
+              && sudo install -o root -g root -m 0644 /tmp/clap-monitor.cron /etc/cron.d/clap-monitor \
+              && rm /tmp/clap-monitor.sh /tmp/clap-monitor.cron \
+              && sudo /usr/local/sbin/clap-monitor.sh && sudo cat /var/lib/clap-monitor/latest.json'
         ;;
     pkndr)
         # Needs /opt/apps/pkndr/.env on the host (PKNDR_* settings).
