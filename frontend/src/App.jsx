@@ -17,9 +17,12 @@ import TimingHistory from './pages/TimingHistory.jsx'
 import ProgressReport from './pages/ProgressReport.jsx'
 import AdminDashboard from './pages/AdminDashboard.jsx'
 import AdminClubDetail from './pages/AdminClubDetail.jsx'
+import OfflineScreen from './components/OfflineScreen.jsx'
 
 export default function App() {
   return (
+    <>
+    <OfflineScreen />
     <Routes>
       {/* Public */}
       <Route path="/" element={<Home />} />
@@ -56,5 +59,6 @@ export default function App() {
         <Route path="/admin/clubs/:id" element={<AdminClubDetail />} />
       </Route>
     </Routes>
+    </>
   )
 }

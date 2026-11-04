@@ -63,9 +63,20 @@ STATIC_DIR = Path(__file__).parent / "static"
 if STATIC_DIR.exists():
     app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")
 
+    # index.html, sw.js and the manifest must always be revalidated so a deploy reaches
+    # installed PWAs; /assets files are content-hashed and safe to cache for a year.
+    NO_CACHE = {"Cache-Control": "no-cache"}
+
+    @app.middleware("http")
+    async def asset_cache_headers(request, call_next):
+        response = await call_next(request)
+        if request.url.path.startswith("/assets/"):
+            response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+        return response
+
     @app.get("/{full_path:path}", include_in_schema=False)
     def spa(full_path: str):
         file = STATIC_DIR / full_path
         if full_path and file.is_file():
-            return FileResponse(file)
-        return FileResponse(STATIC_DIR / "index.html")
+            return FileResponse(file, headers=NO_CACHE)
+        return FileResponse(STATIC_DIR / "index.html", headers=NO_CACHE)
