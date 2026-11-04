@@ -9,6 +9,14 @@ from db.control_models import AdminAuditLog, Club, User
 from db.engine import create_club_database, delete_club_database, get_club_session_factory
 
 
+def ensure_phone_available(control_db: Session, phone: str):
+    """A head coach phone must not belong to any user or to another club registration."""
+    if control_db.query(User).filter_by(phone=phone).first():
+        raise HTTPException(status_code=409, detail="Phone is already registered")
+    if control_db.query(Club).filter_by(head_coach_phone=phone).first():
+        raise HTTPException(status_code=409, detail="A club is already registered with this phone")
+
+
 def approve_club(control_db: Session, club: Club, admin_id: str):
     if club.status == "approved":
         raise HTTPException(status_code=409, detail="Club is already approved")

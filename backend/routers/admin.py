@@ -7,7 +7,7 @@ from db.control_models import Club, User
 from db.engine import get_control_db
 from logging_config import get_logger, log_event
 from middleware.auth import require_admin
-from schemas.club import RejectRequest
+from schemas.club import ClubRegister, RejectRequest
 from services import club_service
 
 log = get_logger("app.admin")
@@ -40,6 +40,18 @@ def list_clubs(status: str | None = None, db: Session = Depends(get_control_db))
     if status:
         q = q.filter(Club.status == status)
     return [_club_out(c) for c in q.all()]
+
+
+@router.post("/clubs", status_code=201)
+def create_club(body: ClubRegister, db: Session = Depends(get_control_db), admin: dict = Depends(require_admin)):
+    """Super admin adds a club and its head coach directly: created already approved, no registration step."""
+    club_service.ensure_phone_available(db, body.head_coach_phone)
+    club = Club(name=body.name, head_coach_name=body.head_coach_name, head_coach_phone=body.head_coach_phone)
+    db.add(club)
+    db.flush()
+    club_service.approve_club(db, club, admin["user_id"])  # commits club, head coach and audit entry together
+    log_event(log, logging.INFO, "club_created_by_admin", club_id=club.id, club_name=club.name, by=admin["user_id"])
+    return _club_out(club)
 
 
 @router.get("/clubs/{club_id}")

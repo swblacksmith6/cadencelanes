@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Waves, LogOut } from 'lucide-react'
+import { Waves, LogOut, Plus } from 'lucide-react'
 import api from '../api/client.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import LoadingSpinner from '../components/LoadingSpinner.jsx'
@@ -19,6 +19,9 @@ export default function AdminDashboard() {
   const [tab, setTab] = useState('pending')
   const [clubs, setClubs] = useState(null)
   const [error, setError] = useState('')
+  const [showForm, setShowForm] = useState(false)
+  const [form, setForm] = useState({ name: '', head_coach_name: '', head_coach_phone: '' })
+  const [saving, setSaving] = useState(false)
 
   const load = () => {
     setClubs(null)
@@ -30,6 +33,23 @@ export default function AdminDashboard() {
   }
 
   useEffect(load, [tab])
+
+  const createClub = async (e) => {
+    e.preventDefault()
+    setError('')
+    setSaving(true)
+    try {
+      await api.post('/admin/clubs', form)
+      setForm({ name: '', head_coach_name: '', head_coach_phone: '' })
+      setShowForm(false)
+      if (tab === 'approved') load()
+      else setTab('approved')
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Could not create the club')
+    } finally {
+      setSaving(false)
+    }
+  }
 
   const approve = async (club) => {
     try {
@@ -75,7 +95,32 @@ export default function AdminDashboard() {
       </header>
 
       <main className="mx-auto max-w-5xl space-y-4 p-6">
-        <h1 className="text-2xl font-bold text-slate-800">Clubs</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-bold text-slate-800">Clubs</h1>
+          <button onClick={() => setShowForm((v) => !v)}
+            className="flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-700">
+            <Plus className="h-4 w-4" /> Add club
+          </button>
+        </div>
+
+        {showForm && (
+          <form onSubmit={createClub} className="grid gap-3 rounded-xl bg-white p-4 shadow-sm sm:grid-cols-4">
+            <input required placeholder="Club name" value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              className="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+            <input required placeholder="Head coach name" value={form.head_coach_name}
+              onChange={(e) => setForm({ ...form, head_coach_name: e.target.value })}
+              className="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+            <input required type="tel" placeholder="Head coach phone (10 digits)" pattern="[0-9]{10}"
+              value={form.head_coach_phone}
+              onChange={(e) => setForm({ ...form, head_coach_phone: e.target.value })}
+              className="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+            <button disabled={saving}
+              className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50">
+              {saving ? 'Creating...' : 'Create and approve'}
+            </button>
+          </form>
+        )}
 
         <div className="flex gap-2">
           {TABS.map((t) => (

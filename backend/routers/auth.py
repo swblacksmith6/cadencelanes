@@ -9,7 +9,7 @@ from db.engine import get_control_db
 from logging_config import get_logger, log_event
 from schemas.auth import OTPRequest, OTPVerify, TokenResponse
 from schemas.club import ClubRegister
-from services import auth_service, sms_service
+from services import auth_service, club_service, sms_service
 
 log = get_logger("app.auth")
 
@@ -65,10 +65,7 @@ def verify_otp(body: OTPVerify, db: Session = Depends(get_control_db)):
 
 @register_router.post("/register-club", status_code=201)
 def register_club(body: ClubRegister, db: Session = Depends(get_control_db)):
-    if db.query(User).filter_by(phone=body.head_coach_phone).first():
-        raise HTTPException(status_code=409, detail="Phone is already registered")
-    if db.query(Club).filter_by(head_coach_phone=body.head_coach_phone).first():
-        raise HTTPException(status_code=409, detail="A club is already registered with this phone")
+    club_service.ensure_phone_available(db, body.head_coach_phone)
     club = Club(name=body.name, head_coach_name=body.head_coach_name, head_coach_phone=body.head_coach_phone)
     db.add(club)
     db.commit()
