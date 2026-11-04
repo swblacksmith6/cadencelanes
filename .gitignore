@@ -8,3 +8,8 @@ frontend/dist/
 .env
 .venv/
 .pytest_cache/
+
+# Deployment secrets live only on the server
+clap-deploy/**/.env*
+clap-deploy/**/auth.caddy
+clap-deploy/**/*credentials*

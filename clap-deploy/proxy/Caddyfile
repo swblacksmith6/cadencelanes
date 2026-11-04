@@ -11,27 +11,7 @@
 	}
 }
 
-# Both apps sit behind basic auth until they have a real SMS OTP sender.
-# auth.caddy holds the "basic_auth { user hash }" block and lives only on the server.
-(gate) {
-	import /etc/caddy/auth.caddy
-}
-
 cl.lusidlogix.com {
 	import secure
-	# PWA files are fetched by the browser without credentials, so they must stay outside the gate.
-	@pwa path /manifest.webmanifest /sw.js /registerSW.js /workbox-*.js /icon-*.png /apple-touch-icon.png
-	handle @pwa {
-		reverse_proxy cadencelanes:8000
-	}
-	handle {
-		import gate
-		reverse_proxy cadencelanes:8000
-	}
-}
-
-pd.lusidlogix.com {
-	import secure
-	import gate
-	reverse_proxy pkndr-web:80
+	reverse_proxy cadencelanes:8000
 }

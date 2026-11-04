@@ -1,0 +1,3 @@
+SHELL=/bin/bash
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+15 3 * * * root flock -n /run/clap-backup.lock /usr/local/sbin/clap-backup.sh
