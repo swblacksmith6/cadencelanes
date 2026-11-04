@@ -1,7 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.orm import Session, sessionmaker
 
 from config import settings
@@ -10,14 +10,28 @@ DATA_DIR = Path(settings.DATA_DIR)
 CLUBS_DIR = DATA_DIR / "clubs"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
+def _tune_sqlite(engine):
+    """WAL lets readers and the single writer run together; the timeout makes a second
+    writer wait for the lock instead of failing with "database is locked"."""
+    @event.listens_for(engine, "connect")
+    def _on_connect(dbapi_conn, _record):
+        cur = dbapi_conn.cursor()
+        cur.execute("PRAGMA journal_mode=WAL")
+        cur.execute("PRAGMA synchronous=NORMAL")
+        cur.execute("PRAGMA busy_timeout=15000")
+        cur.close()
+    return engine
+
+
 # ── Control DB ──────────────────────────────────────
 CONTROL_DB_URL = f"sqlite:///{DATA_DIR}/control.db"
 
 control_engine = create_engine(
     CONTROL_DB_URL,
-    connect_args={"check_same_thread": False},
+    connect_args={"check_same_thread": False, "timeout": 15},
     echo=False,
 )
+_tune_sqlite(control_engine)
 
 ControlSessionLocal = sessionmaker(bind=control_engine, autocommit=False, autoflush=False)
 
@@ -37,11 +51,11 @@ def get_club_engine(club_id: str):
     """Returns (or creates + caches) an engine for a specific club DB."""
     CLUBS_DIR.mkdir(parents=True, exist_ok=True)
     db_path = CLUBS_DIR / f"club_{club_id}.db"
-    return create_engine(
+    return _tune_sqlite(create_engine(
         f"sqlite:///{db_path}",
-        connect_args={"check_same_thread": False},
+        connect_args={"check_same_thread": False, "timeout": 15},
         echo=False,
-    )
+    ))
 
 
 def get_club_session_factory(club_id: str) -> sessionmaker:
