@@ -6,11 +6,12 @@ from sqlalchemy.orm import Session
 from config import settings
 from db.control_models import Club, User
 from db.engine import get_control_db
+from logging_config import get_logger, log_event
 from schemas.auth import OTPRequest, OTPVerify, TokenResponse
 from schemas.club import ClubRegister
 from services import auth_service, sms_service
 
-logger = logging.getLogger("uvicorn.error")
+log = get_logger("app.auth")
 
 router = APIRouter()
 register_router = APIRouter()
@@ -20,10 +21,12 @@ register_router = APIRouter()
 def request_otp(body: OTPRequest, db: Session = Depends(get_control_db)):
     user = db.query(User).filter_by(phone=body.phone, is_active=True).first()
     if user is None:
+        log_event(log, logging.WARNING, "otp_request_unknown_phone", phone_tail=body.phone[-4:])
         raise HTTPException(status_code=404, detail="Phone not registered")
     try:
         code = auth_service.generate_otp(db, body.phone)
     except auth_service.OTPRateLimited:
+        log_event(log, logging.WARNING, "otp_rate_limited", phone_tail=body.phone[-4:])
         raise HTTPException(status_code=429, detail="Too many OTP requests, try again later")
     if sms_service.sms_enabled():
         try:
@@ -31,7 +34,8 @@ def request_otp(body: OTPRequest, db: Session = Depends(get_control_db)):
         except sms_service.SMSSendError:
             raise HTTPException(status_code=502, detail="Could not send the OTP SMS, try again")
     else:
-        logger.info("OTP for ...%s: %s", body.phone[-4:], code)
+        # Dev only (no SMS provider configured): the operator reads the code from the log.
+        log_event(log, logging.INFO, "otp_generated_dev", phone_tail=body.phone[-4:], otp=code)
     if settings.OTP_IN_RESPONSE:
         return {"message": "OTP sent", "otp": code}
     return {"message": "OTP sent"}
@@ -40,11 +44,13 @@ def request_otp(body: OTPRequest, db: Session = Depends(get_control_db)):
 @router.post("/verify-otp", response_model=TokenResponse)
 def verify_otp(body: OTPVerify, db: Session = Depends(get_control_db)):
     if not auth_service.verify_otp(db, body.phone, body.code):
+        log_event(log, logging.WARNING, "otp_verify_failed", phone_tail=body.phone[-4:])
         raise HTTPException(status_code=401, detail="Invalid or expired OTP")
     user = db.query(User).filter_by(phone=body.phone, is_active=True).first()
     if user is None:
         raise HTTPException(status_code=401, detail="User not found")
     token = auth_service.create_jwt(user)
+    log_event(log, logging.INFO, "login_ok", user_id=user.id, role=user.role, club_id=user.club_id)
     return {
         "access_token": token,
         "user": {

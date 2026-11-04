@@ -9,6 +9,7 @@ def _flag(name: str, default: bool = False) -> bool:
 
 class Settings:
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "dev")
+    LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
     JWT_SECRET: str = os.getenv("JWT_SECRET", DEV_JWT_SECRET)
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRY_DAYS: int = int(os.getenv("JWT_EXPIRY_DAYS", "30"))

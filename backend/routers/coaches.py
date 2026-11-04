@@ -1,13 +1,17 @@
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from db.club_models import Coach
 from db.control_models import User
 from db.engine import get_control_db
+from logging_config import get_logger, log_event
 from middleware.auth import require_coach, require_head_coach
 from routers.deps import club_db
 from schemas.coach import CoachCreate, CoachUpdate
 
+log = get_logger("app.coaches")
 router = APIRouter()
 
 
@@ -88,4 +92,5 @@ def deactivate_coach(
     if ctrl_user:
         ctrl_user.is_active = False
         control.commit()
+    log_event(log, logging.INFO, "coach_deactivated", coach_id=coach_id, club_id=user.get("club_id"), by=user["user_id"])
     return {"message": "Coach deactivated"}

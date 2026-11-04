@@ -5,3 +5,11 @@ backend/data
 data
 *.md
 .git
+**/.venv
+backend/tests
+**/.pytest_cache
+**/*.test.js
+**/*.test.jsx
+frontend/src/test
+.github
+.githooks

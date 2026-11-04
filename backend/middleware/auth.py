@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, Path
+from fastapi import Depends, HTTPException, Path, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
@@ -12,6 +12,7 @@ security = HTTPBearer(auto_error=False)
 
 
 def get_current_user(
+    request: Request,
     credentials: HTTPAuthorizationCredentials = Depends(security),
     control_db: Session = Depends(get_control_db),
 ) -> dict:
@@ -25,6 +26,8 @@ def get_current_user(
     user = control_db.query(User).filter_by(id=claims.get("user_id")).first()
     if user is None or not user.is_active:
         raise HTTPException(status_code=401, detail="Account is no longer active")
+    request.state.user_id = claims.get("user_id")
+    request.state.club_id = claims.get("club_id")
     return claims
 
 

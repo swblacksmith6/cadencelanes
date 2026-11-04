@@ -1,12 +1,16 @@
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from db.control_models import Club, User
 from db.engine import get_control_db
+from logging_config import get_logger, log_event
 from middleware.auth import require_admin
 from schemas.club import RejectRequest
 from services import club_service
 
+log = get_logger("app.admin")
 router = APIRouter(dependencies=[Depends(require_admin)])
 
 
@@ -53,6 +57,7 @@ def club_detail(club_id: str, db: Session = Depends(get_control_db)):
 def approve(club_id: str, db: Session = Depends(get_control_db), admin: dict = Depends(require_admin)):
     club = _get_club(db, club_id)
     club_service.approve_club(db, club, admin["user_id"])
+    log_event(log, logging.INFO, "club_approved", club_id=club_id, club_name=club.name, by=admin["user_id"])
     return {"message": f"Club '{club.name}' approved"}
 
 
@@ -60,6 +65,7 @@ def approve(club_id: str, db: Session = Depends(get_control_db), admin: dict = D
 def reject(club_id: str, body: RejectRequest, db: Session = Depends(get_control_db), admin: dict = Depends(require_admin)):
     club = _get_club(db, club_id)
     club_service.reject_club(db, club, admin["user_id"], body.reason)
+    log_event(log, logging.INFO, "club_rejected", club_id=club_id, club_name=club.name, by=admin["user_id"])
     return {"message": f"Club '{club.name}' rejected"}
 
 
@@ -68,6 +74,7 @@ def delete(club_id: str, db: Session = Depends(get_control_db), admin: dict = De
     club = _get_club(db, club_id)
     name = club.name
     club_service.delete_club(db, club, admin["user_id"])
+    log_event(log, logging.WARNING, "club_deleted", club_id=club_id, club_name=name, by=admin["user_id"])
     return {"message": f"Club '{name}' deleted"}
 
 
