@@ -11,7 +11,32 @@
 	}
 }
 
+# JSON access log for offline analysis. Written under /var/lib/clap-monitor/access on the host so the
+# monitoring pull picks it up. Secrets are removed before anything is written: auth and cookie headers,
+# the query string, and all response headers. Rotated by size, 7 days kept on clap.
+(accesslog) {
+	log {
+		output file /var/log/caddy/access.log {
+			mode 0644
+			roll_size 5MiB
+			roll_keep 20
+			roll_keep_for 168h
+		}
+		format filter {
+			wrap json
+			fields {
+				request>headers>Authorization delete
+				request>headers>Cookie delete
+				request>uri regexp `\?.*$` ""
+				request>tls delete
+				resp_headers delete
+			}
+		}
+	}
+}
+
 cl.lusidlogix.com {
 	import secure
+	import accesslog
 	reverse_proxy cadencelanes:8000
 }

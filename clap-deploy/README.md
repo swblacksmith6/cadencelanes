@@ -114,6 +114,14 @@ No alert credentials or outbound calls live on clap.
   `mba/clap-stats.cron`) rsyncs the folder into `~/clap-stats` and writes `pull-status.json`.
   A failed pull or a `latest.json` older than 15 minutes sets `ok:false` there, which also catches a dead clap.
 
+- HTTP access log: Caddy writes one JSON line per request for `cl.lusidlogix.com` to
+  `/var/lib/clap-monitor/access/access.log` (rotated at 5 MiB, gzipped, 7 days kept on clap). Fields include
+  client IP, method, path, status, duration (seconds), bytes and user agent. The query string, `Authorization`
+  and `Cookie` headers, TLS details and response headers are removed before writing. The pull copies the
+  `access/` folder to `~/clap-stats/access/` on the monitoring machine, which keeps the full history for
+  offline analysis (latency percentiles per route, clients, regions). Config: `proxy/Caddyfile` (`accesslog`
+  snippet); apply with `deploy.sh <host> proxy`. Client IPs are personal data: keep that folder private.
+
 The pull uses its own SSH key, restricted on clap to read-only access of that one folder. In
 `/home/deploy/.ssh/authorized_keys` on clap, one line (public key from the monitoring machine):
 

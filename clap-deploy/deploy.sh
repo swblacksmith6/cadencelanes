@@ -37,6 +37,8 @@ for t in "${TARGETS[@]}"; do
     proxy)
         # auth.caddy is optional (basic auth snippet) and lives only on the host.
         rsy --exclude auth.caddy --exclude '*credentials*' "$HERE/proxy/" "deploy@$HOST:/opt/proxy/"
+        # Access log directory (bind-mounted into Caddy, pulled by the monitoring machine).
+        rssh 'sudo install -d -o root -g root -m 0755 /var/lib/clap-monitor/access'
         # Single-file bind mounts keep the old inode after rsync, so recreate instead of reload.
         rssh 'cd /opt/proxy && sudo docker compose up -d --force-recreate'
         ;;
