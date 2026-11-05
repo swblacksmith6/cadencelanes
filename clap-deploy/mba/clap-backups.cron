@@ -1,0 +1,6 @@
+# Install on the backup machine with:  crontab -e   (paste these lines)
+# Clap backs up at 02:00 IST and takes about 10 seconds. Cron uses the machine's local time,
+# so these assume it runs on IST; on a UTC machine use "0 21" and "0 1" instead.
+# The second line is a retry for a night when the first pull failed; it copies nothing new otherwise.
+30 2 * * * $HOME/bin/pull-clap-backups.sh >/dev/null 2>&1
+30 7 * * * $HOME/bin/pull-clap-backups.sh >/dev/null 2>&1

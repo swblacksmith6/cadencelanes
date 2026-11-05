@@ -2,6 +2,11 @@
 # Daily backup of the Docker data volumes into /home/deploy/backups.
 # SQLite files are copied with the online backup API, so the copy is consistent
 # while the apps are running. Installed to /usr/local/sbin and run from cron as root.
+#
+# The helper container runs as the volume's owner (the app's uid) with a writable mount. A WAL-mode
+# database that no app connection has open needs to create its -wal/-shm files even for a read-only
+# connection, so a read-only mount fails with "unable to open database file". Running as the owner
+# keeps any file SQLite creates owned by the app's uid.
 set -euo pipefail
 
 DEST=/home/deploy/backups
@@ -36,8 +41,11 @@ for vol in "${VOLUMES[@]}"; do
         logger -t clap-backup "volume $vol not found, skipping"
         continue
     fi
+    OWNER=$(stat -c %u "$(docker volume inspect -f '{{.Mountpoint}}' "$vol")")
     mkdir -p "$WORK/$vol"
-    docker run --rm --network none -v "$vol":/data:ro -v "$WORK/$vol":/out \
+    chown "$OWNER" "$WORK/$vol"
+    docker run --rm --network none --user "$OWNER:$OWNER" --cap-drop ALL --security-opt no-new-privileges \
+        -v "$vol":/data -v "$WORK/$vol":/out \
         python:3.12-slim python -c "$PY"
 done
 

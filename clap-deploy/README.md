@@ -139,10 +139,27 @@ restrict,command="/usr/bin/rrsync -ro /var/lib/clap-monitor" ssh-ed25519 AAAA...
 ## Backups
 
 `/usr/local/sbin/clap-backup.sh` runs from `/etc/cron.d/clap-backup` at 20:30 UTC (02:00 IST), keeps 14 days of
-`clap-data-<timestamp>.tar.gz` in `/home/deploy/backups` (mode 600). Pull them elsewhere:
+`clap-data-<timestamp>.tar.gz` in `/home/deploy/backups` (mode 600).
 
-```bash
-rsync -a --ignore-existing deploy@<host>:/home/deploy/backups/ ~/clap-backups/
-```
+### Pulling backups to another machine
+
+`mba/pull-clap-backups.sh` copies new archives to `~/clap-backups` on the backup machine (never re-copies or
+deletes what it already has, so history outlives clap's 14 days). It checks that the newest archive is a valid
+gzip tar and not older than 26 hours, and writes `backups-pull-status.json` (`ok`, `newest`, `newest_age_h`,
+`archives`, `message`) for the alerter. Set `CLAP_BACKUP_KEEP_DAYS=N` to prune local archives older than N days
+(default keeps all). Keep the folder private: the archives contain the databases.
+
+One-time setup, like the stats pull but with its own key and folder:
+
+1. On the backup machine: `ssh-keygen -t ed25519 -N "" -f ~/.ssh/clap_backup_ed25519 -C clap-backup`
+2. On clap, add one line to `/home/deploy/.ssh/authorized_keys` (public key from step 1):
+   ```
+   restrict,command="/usr/bin/rrsync -ro /home/deploy/backups" ssh-ed25519 AAAA... clap-backup
+   ```
+3. Copy `mba/pull-clap-backups.sh` to `~/bin/` (executable), run it once by hand and check
+   `~/clap-backups/backups-pull-status.json` says `"ok":true`.
+4. `crontab -e` and paste `mba/clap-backups.cron` (02:30 IST, retry at 07:30 IST; cron uses the machine's local time).
+
+Restore from a pulled archive: see below.
 
 Restore: stop the app, copy the `.db` files from the archive into the volume, start the app.
