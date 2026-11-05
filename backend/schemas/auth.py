@@ -20,4 +20,5 @@ class UserOut(BaseModel):
 
 class TokenResponse(BaseModel):
     access_token: str
+    other_sessions_ended: bool = False
     user: UserOut

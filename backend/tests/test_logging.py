@@ -59,8 +59,10 @@ def test_unhandled_exception_returns_500_with_request_id_and_logs_hint(client, c
 
 
 def test_sensitive_values_never_logged(client, api, admin_token, caplog):
+    from conftest import make_club
     caplog.set_level(logging.DEBUG)
-    api.login("9999999999")
+    # A fresh user: logging in again as a shared fixture user would end that fixture's session.
+    make_club(api, admin_token, "Log Check Academy")
     text = " ".join(LogfmtFormatter().format(r) for r in caplog.records)
     assert "Bearer" not in text and "access_token" not in text
 
