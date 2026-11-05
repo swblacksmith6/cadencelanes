@@ -9,6 +9,7 @@ services:
     restart: unless-stopped
     environment:
       ENVIRONMENT: prod
+      LOG_LEVEL: ${LOG_LEVEL:-ERROR}
       JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
       MSG91_AUTH_KEY: ${MSG91_AUTH_KEY:?set MSG91_AUTH_KEY in .env}
       MSG91_OTP_TEMPLATE_ID: ${MSG91_OTP_TEMPLATE_ID:?set MSG91_OTP_TEMPLATE_ID in .env}

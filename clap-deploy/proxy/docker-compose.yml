@@ -12,6 +12,7 @@ services:
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ./auth.caddy:/etc/caddy/auth.caddy:ro
+      - /var/lib/clap-monitor/access:/var/log/caddy
       - caddy-data:/data
       - caddy-config:/config
     networks:

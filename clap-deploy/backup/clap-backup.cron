@@ -1,0 +1,4 @@
+SHELL=/bin/bash
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+# 20:30 UTC = 02:00 IST, well before the morning swimming classes.
+30 20 * * * root flock -n /run/clap-backup.lock /usr/local/sbin/clap-backup.sh

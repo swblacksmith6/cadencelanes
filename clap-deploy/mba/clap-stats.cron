@@ -1,0 +1,3 @@
+# Install on the monitoring machine with:  crontab -e   (paste this line)
+# Pull clap's stats every 10 minutes, at :02, :12, :22 ... (just after clap's 5-minute samples).
+2-59/10 * * * * $HOME/bin/pull-clap-stats.sh >/dev/null 2>&1

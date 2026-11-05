@@ -11,27 +11,32 @@
 	}
 }
 
-# Both apps sit behind basic auth until they have a real SMS OTP sender.
-# auth.caddy holds the "basic_auth { user hash }" block and lives only on the server.
-(gate) {
-	import /etc/caddy/auth.caddy
+# JSON access log for offline analysis. Written under /var/lib/clap-monitor/access on the host so the
+# monitoring pull picks it up. Secrets are removed before anything is written: auth and cookie headers,
+# the query string, and all response headers. Rotated by size, 7 days kept on clap.
+(accesslog) {
+	log {
+		output file /var/log/caddy/access.log {
+			mode 0644
+			roll_size 5MiB
+			roll_keep 20
+			roll_keep_for 168h
+		}
+		format filter {
+			wrap json
+			fields {
+				request>headers>Authorization delete
+				request>headers>Cookie delete
+				request>uri regexp `\?.*$` ""
+				request>tls delete
+				resp_headers delete
+			}
+		}
+	}
 }
 
 cl.lusidlogix.com {
 	import secure
-	# PWA files are fetched by the browser without credentials, so they must stay outside the gate.
-	@pwa path /manifest.webmanifest /sw.js /registerSW.js /workbox-*.js /icon-*.png /apple-touch-icon.png
-	handle @pwa {
-		reverse_proxy cadencelanes:8000
-	}
-	handle {
-		import gate
-		reverse_proxy cadencelanes:8000
-	}
-}
-
-pd.lusidlogix.com {
-	import secure
-	import gate
-	reverse_proxy pkndr-web:80
+	import accesslog
+	reverse_proxy cadencelanes:8000
 }
