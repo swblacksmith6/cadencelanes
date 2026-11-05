@@ -50,6 +50,15 @@ class User(ControlBase, UUIDMixin, TimestampMixin):
         return f"<User {self.name} ({self.role})>"
 
 
+class ActiveSession(ControlBase):
+    """The one live login of a user. A new login replaces the row, which invalidates the older token."""
+    __tablename__ = "active_sessions"
+
+    user_id = Column(String(36), ForeignKey("users.id"), primary_key=True)
+    session_id = Column(String(36), nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+
 class OTPCode(ControlBase, UUIDMixin):
     __tablename__ = "otp_codes"
 

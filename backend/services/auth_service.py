@@ -1,11 +1,12 @@
 import secrets
+import uuid
 from datetime import datetime, timedelta
 
 from jose import jwt
 from sqlalchemy.orm import Session
 
 from config import settings
-from db.control_models import OTPCode, User
+from db.control_models import ActiveSession, OTPCode, User
 
 
 class OTPRateLimited(Exception):
@@ -45,8 +46,23 @@ def verify_otp(db: Session, phone: str, code: str) -> bool:
     return True
 
 
-def create_jwt(user: User) -> str:
+def start_session(db: Session, user: User) -> tuple[str, bool]:
+    """Make this login the user's only live session. Returns (session_id, replaced_another)."""
+    sid = str(uuid.uuid4())
+    row = db.get(ActiveSession, user.id)
+    replaced = row is not None
+    if row is None:
+        db.add(ActiveSession(user_id=user.id, session_id=sid))
+    else:
+        row.session_id = sid
+        row.created_at = datetime.utcnow()
+    db.commit()
+    return sid, replaced
+
+
+def create_jwt(user: User, session_id: str) -> str:
     payload = {
+        "sid": session_id,
         "user_id": user.id,
         "phone": user.phone,
         "role": user.role,

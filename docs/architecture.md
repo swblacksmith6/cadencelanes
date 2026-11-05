@@ -13,7 +13,11 @@ race/practice timings and progress notes for their students.
 
 ## Multi-tenancy: a SQLite file per club
 
-- `DATA_DIR/control.db` holds platform data: `clubs`, `users`, `otp_codes`, `admin_audit_log`. Models: `backend/db/control_models.py`.
+- `DATA_DIR/control.db` holds platform data: `clubs`, `users`, `otp_codes`, `active_sessions`, `admin_audit_log`. Models: `backend/db/control_models.py`.
+  `active_sessions` has one row per user (`user_id` primary key and foreign key to `users.id`, `session_id` uuid, `created_at`).
+  A login overwrites the row and the JWT carries the same id as `sid`, so only the newest login works.
+  Existing databases get the table automatically at startup (`create_all`); if you prefer to create it by hand:
+  `CREATE TABLE active_sessions (user_id VARCHAR(36) NOT NULL PRIMARY KEY REFERENCES users(id), session_id VARCHAR(36) NOT NULL, created_at DATETIME NOT NULL);`
 - `DATA_DIR/clubs/club_<club_id>.db` holds one club's data: coaches, students, parent contacts, sessions,
   attendance, timings, personal bests, notes, skill assessments, swim styles, distance events.
   Models: `backend/db/club_models.py`.
@@ -29,7 +33,7 @@ race/practice timings and progress notes for their students.
 ## Request flow
 
 1. `request_logging` middleware (`backend/main.py`) assigns `request_id`, times the request, logs `event=request`.
-2. Route dependencies: `get_current_user` (`backend/middleware/auth.py`) decodes the JWT **and checks the user is still active in control.db**.
+2. Route dependencies: `get_current_user` (`backend/middleware/auth.py`) decodes the JWT, **checks the user is still active in control.db and that the token's `sid` is the user's current `active_sessions` row** (else 401 `SESSION_REPLACED`).
    Then `require_admin`, `require_coach` or `require_head_coach` check the role, and `_check_club` checks that the
    `club_id` in the URL equals the token's club (super admin passes).
 3. `club_db` (`backend/routers/deps.py`) opens the club's SQLite session from the `club_id` path parameter.
