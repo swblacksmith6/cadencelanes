@@ -5,10 +5,13 @@ from sqlalchemy.orm import Session
 
 from config import settings
 from db.club_models import Coach
-from db.control_models import User
+from db.control_models import ActiveSession, User
 from db.engine import get_control_db
 
 security = HTTPBearer(auto_error=False)
+
+# The 401 detail the frontend looks for to explain why it was signed out.
+SESSION_REPLACED = "SESSION_REPLACED"
 
 
 def get_current_user(
@@ -26,6 +29,12 @@ def get_current_user(
     user = control_db.query(User).filter_by(id=claims.get("user_id")).first()
     if user is None or not user.is_active:
         raise HTTPException(status_code=401, detail="Account is no longer active")
+    # One live session per user: a newer login replaces this one.
+    live = control_db.get(ActiveSession, user.id)
+    if live is None or claims.get("sid") is None:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    if live.session_id != claims["sid"]:
+        raise HTTPException(status_code=401, detail=SESSION_REPLACED)
     request.state.user_id = claims.get("user_id")
     request.state.club_id = claims.get("club_id")
     return claims

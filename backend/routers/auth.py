@@ -49,10 +49,13 @@ def verify_otp(body: OTPVerify, db: Session = Depends(get_control_db)):
     user = db.query(User).filter_by(phone=body.phone, is_active=True).first()
     if user is None:
         raise HTTPException(status_code=401, detail="User not found")
-    token = auth_service.create_jwt(user)
-    log_event(log, logging.INFO, "login_ok", user_id=user.id, role=user.role, club_id=user.club_id)
+    sid, replaced = auth_service.start_session(db, user)
+    token = auth_service.create_jwt(user, sid)
+    log_event(log, logging.INFO, "login_ok", user_id=user.id, role=user.role, club_id=user.club_id,
+              replaced_other_session=replaced)
     return {
         "access_token": token,
+        "other_sessions_ended": replaced,
         "user": {
             "id": user.id,
             "name": user.name,

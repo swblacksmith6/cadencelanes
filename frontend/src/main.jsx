@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { ModeProvider } from './context/ModeContext.jsx'
+import { NoticeProvider } from './context/NoticeContext.jsx'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -11,7 +12,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <AuthProvider>
         <ModeProvider>
-          <App />
+          <NoticeProvider>
+            <App />
+          </NoticeProvider>
         </ModeProvider>
       </AuthProvider>
     </BrowserRouter>
