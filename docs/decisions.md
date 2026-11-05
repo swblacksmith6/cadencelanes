@@ -22,3 +22,7 @@ logfmt lines, one `event=request` per request, `error_code` and `hint` on every 
 
 ## 2026-11: No database migrations (yet)
 `create_all` only. Schema changes to existing databases are manual. Accepted for the MVP; add a migration tool before storing data that cannot be recreated.
+
+## 2026-11: One active session per user
+A new login ends the user's other session (`active_sessions` table, `sid` in the JWT). Simpler to reason about for a small academy and limits a shared or stolen login; the cost is that a coach cannot use a phone and a tablet at the same time. The new table is created by `create_all`, so no manual migration is needed.
+

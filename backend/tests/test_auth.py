@@ -74,6 +74,45 @@ def test_deactivated_coach_loses_access_immediately(client, api, club):
     assert client.get(f"{base}/students", headers=api.h(token)).status_code == 401
 
 
+def test_new_login_ends_the_older_session(client, api, admin_token):
+    from conftest import make_club
+    c = make_club(api, admin_token, "Single Session Academy")
+    base = f"/api/club/{c['club_id']}/students"
+    assert client.get(base, headers=c["h"]).status_code == 200
+
+    r = client.post("/api/auth/request-otp", json={"phone": c["phone"]})
+    r = client.post("/api/auth/verify-otp", json={"phone": c["phone"], "code": r.json()["otp"]})
+    assert r.status_code == 200
+    assert r.json()["other_sessions_ended"] is True
+    new_h = api.h(r.json()["access_token"])
+
+    old = client.get(base, headers=c["h"])
+    assert old.status_code == 401
+    assert old.json()["detail"] == "SESSION_REPLACED"
+    assert client.get(base, headers=new_h).status_code == 200
+
+
+def test_first_login_reports_no_other_session(client, api, admin_token):
+    from conftest import make_club
+    phone = new_phone()
+    r = client.post("/api/register-club", json={"name": "Fresh", "head_coach_name": "H", "head_coach_phone": phone})
+    client.post(f"/api/admin/clubs/{r.json()['club_id']}/approve", headers=api.h(admin_token))
+    r = client.post("/api/auth/request-otp", json={"phone": phone})
+    r = client.post("/api/auth/verify-otp", json={"phone": phone, "code": r.json()["otp"]})
+    assert r.json()["other_sessions_ended"] is False
+
+
+def test_token_without_session_id_is_rejected(client, club):
+    from jose import jwt
+    legacy = jwt.encode(
+        {"user_id": club["user"]["id"], "role": "head_coach", "club_id": club["club_id"],
+         "exp": int(time.time()) + 600},
+        settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
+    r = client.get(f"/api/club/{club['club_id']}/students", headers={"Authorization": f"Bearer {legacy}"})
+    assert r.status_code == 401
+    assert r.json()["detail"] != "SESSION_REPLACED"
+
+
 class _FakeResponse:
     def __init__(self, body):
         self._body = body

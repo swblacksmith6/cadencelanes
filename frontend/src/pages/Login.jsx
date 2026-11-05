@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Waves } from 'lucide-react'
 import api from '../api/client.js'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useNotice } from '../context/NoticeContext.jsx'
 
 export default function Login() {
   const [step, setStep] = useState(1)
@@ -12,6 +13,7 @@ export default function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
+  const { notify } = useNotice()
   const navigate = useNavigate()
 
   const requestOtp = async (e) => {
@@ -36,6 +38,7 @@ export default function Login() {
     try {
       const res = await api.post('/auth/verify-otp', { phone, code })
       login(res.data.access_token, res.data.user)
+      if (res.data.other_sessions_ended) notify('Signed in. Your other signed-in device has been signed out.')
       navigate(res.data.user.role === 'super_admin' ? '/admin' : '/dashboard')
     } catch (err) {
       setError(err.response?.data?.detail || 'Verification failed')
@@ -110,7 +113,11 @@ export default function Login() {
           </form>
         )}
 
-        <p className="mt-6 text-center text-sm text-slate-500">
+        <p className="mt-4 text-center text-xs text-slate-500">
+          Signing in ends your session on any other device.
+        </p>
+
+        <p className="mt-4 text-center text-sm text-slate-500">
           New academy? <Link to="/register" className="text-sky-600 hover:underline">Register your club</Link>
         </p>
       </div>
