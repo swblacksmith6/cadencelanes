@@ -48,28 +48,28 @@ export default function TimingHistory() {
   const showChart = styleId && distanceId && chartData.length > 1
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2.5 md:space-y-4">
       <div>
         <Link to="/students" className="text-sm text-sky-600 hover:underline">← Students</Link>
-        <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-800">{student.name} — Timing History</h1>
+        <h1 className="mt-0.5 text-lg font-bold tracking-tight text-slate-800 md:mt-1 md:text-2xl md:font-extrabold">{student.name} — Timing History</h1>
       </div>
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-2 md:gap-3">
         <select value={styleId} onChange={(e) => setStyleId(e.target.value)}
-          className="rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-sky-500 focus:outline-none">
+          className="rounded-xl border border-slate-300 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none md:px-3.5 md:py-2.5">
           <option value="">All styles</option>
           {styles.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
         </select>
         <select value={distanceId} onChange={(e) => setDistanceId(e.target.value)}
-          className="rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-sky-500 focus:outline-none">
+          className="rounded-xl border border-slate-300 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none md:px-3.5 md:py-2.5">
           <option value="">All distances</option>
           {distances.map((d) => <option key={d.id} value={d.id}>{d.label}</option>)}
         </select>
       </div>
 
       {showChart && (
-        <div className="rounded-2xl bg-white p-5 shadow-sm">
-          <h2 className="mb-3 text-sm font-semibold text-slate-600">Time trend (lower is better)</h2>
+        <div className="rounded-xl bg-white p-3 shadow-sm md:rounded-2xl md:p-5">
+          <h2 className="mb-2 text-xs font-semibold text-slate-600 md:mb-3 md:text-sm">Time trend (lower is better)</h2>
           <ResponsiveContainer width="100%" height={260}>
             <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#d6e4dd" />
@@ -82,17 +82,17 @@ export default function TimingHistory() {
         </div>
       )}
 
-      <ul className="space-y-3 md:hidden">
+      <ul className="space-y-1.5 md:hidden">
         {timings.map((t) => (
-          <li key={t.id} className="flex items-center justify-between gap-3 rounded-2xl bg-white p-4 shadow-sm">
+          <li key={t.id} className="flex items-center justify-between gap-3 rounded-xl bg-white px-3 py-1.5 shadow-sm">
             <div className="min-w-0">
-              <div className="font-bold text-slate-800">{t.style} {t.distance}</div>
-              <div className="text-xs capitalize text-slate-500">{t.session_date} · {t.session_type}</div>
-              {t.notes && <div className="mt-1 text-sm text-slate-500">{t.notes}</div>}
+              <div className="text-sm font-medium text-slate-800">{t.style} {t.distance}</div>
+              <div className="text-[11px] capitalize leading-tight text-slate-500">{t.session_date} · {t.session_type}</div>
+              {t.notes && <div className="text-[11px] leading-tight text-slate-500">{t.notes}</div>}
             </div>
-            <div className="shrink-0 text-right">
-              <div className="font-mono text-lg font-medium text-slate-800">{t.time_seconds}s</div>
-              {t.is_pb && <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">PB</span>}
+            <div className="flex shrink-0 items-center gap-1.5">
+              {t.is_pb && <span className="rounded-full bg-amber-100 px-1.5 py-px text-[10px] font-semibold text-amber-700">PB</span>}
+              <span className="font-mono text-sm font-medium text-slate-800">{t.time_seconds}s</span>
             </div>
           </li>
         ))}

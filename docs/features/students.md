@@ -11,6 +11,7 @@ All routes `/api/club/{club_id}/students...`, any coach.
 - `DELETE /{id}` soft-deactivates (`is_active=false`); history is kept. Inactive students are not added to new sessions.
 - Notes: `GET/POST /{id}/notes`, category `general|technique|fitness|behavior|goal`.
 - Skill assessments: `GET/POST /{id}/assessments`, `rating` 1 to 5 (1 Beginner, 2 Elementary, 3 Intermediate, 4 Advanced, 5 Elite) for a swim style. Each assessment is a new history row, the latest is "current".
+- On a phone each student is a card. The primary contact has call (`tel:`), WhatsApp (`wa.me`, 10-digit numbers get the 91 prefix) and text (`sms:`) icons, built in `frontend/src/utils/phone.js`. Progress, timings and edit are icon buttons. From tablet width the list is a table with text links.
 - The UI shows exact age (`11y 2m 5d`, `frontend/src/utils/age.js`) so coaches can place swimmers in age categories (8 & Under, Group IV 9-10, III 11-12, II 13-14 in the demo data). Categories are not stored; they are a display convention.
 
 ## Where it lives

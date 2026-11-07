@@ -6,6 +6,9 @@ import { AuthProvider } from './context/AuthContext.jsx'
 import { ModeProvider } from './context/ModeContext.jsx'
 import { NoticeProvider } from './context/NoticeContext.jsx'
 import './index.css'
+import { applyTextSize } from './utils/textSize.js'
+
+applyTextSize()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

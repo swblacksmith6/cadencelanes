@@ -14,7 +14,7 @@ The date range filters **timing trends only**. Response (`build_progress_report`
 - `recent_notes`: the 20 newest coach notes.
 
 ## Where it lives
-`backend/routers/progress.py` (mounted under the students prefix), `backend/services/progress_service.py`; frontend `ProgressReport.jsx` (charts with recharts) and a Print button (`window.print()`; elements with the `no-print` class are hidden when printing).
+`backend/routers/progress.py` (mounted under the students prefix), `backend/services/progress_service.py`; frontend `ProgressReport.jsx` (charts with recharts) and a Print icon button (`window.print()`; elements with the `no-print` class are hidden when printing). The timing trend is chosen with radio-button chips, one per style and distance, each showing that swim's personal best in brackets, for example `Freestyle 50m (PB 30.69s)` (the fastest recorded time if no personal best row exists). On a phone the attendance rings and personal bests are compact so both show on the first screen; personal bests are a list there and a table from tablet width up.
 
 ## Gotchas
 - Attendance and streak only count sessions that have an attendance row for the student.
