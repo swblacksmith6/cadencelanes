@@ -64,8 +64,8 @@ export default function Dashboard() {
 
   // ── Coach mode: big-button poolside home ──
   if (mode === 'coach') {
-    const tile = 'flex w-full items-center gap-4 rounded-3xl p-4 text-left transition active:scale-[0.99]'
-    const iconWrap = 'flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl'
+    const tile = 'flex w-full items-center gap-3 rounded-2xl p-3 text-left transition active:scale-[0.99]'
+    const iconWrap = 'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl'
     return (
       <div className="mx-auto max-w-md space-y-3">
         <h1 className="mb-1 text-2xl font-extrabold tracking-tight text-slate-800">Today</h1>
@@ -77,47 +77,31 @@ export default function Dashboard() {
           return s ? (
             <button key={type} onClick={() => navigate(`/sessions/${s.id}/attendance`)}
               className={`${tile} bg-white shadow-sm active:bg-slate-50`}>
-              <span className={`${iconWrap} ${color}`}><Icon className="h-7 w-7" /></span>
+              <span className={`${iconWrap} ${color}`}><Icon className="h-5 w-5" /></span>
               <div className="min-w-0 flex-1">
-                <div className="font-bold capitalize text-slate-800">{type} session</div>
-                <div className="text-sm text-slate-500">
-                  {s.present_count} present · {s.absent_count} absent
-                </div>
-                <div className="text-xs font-semibold text-sky-600">Tap for attendance</div>
+                <div className="text-sm font-bold capitalize text-slate-800">{type} session</div>
               </div>
-              <ChevronRight className="h-5 w-5 shrink-0 text-slate-300" />
+              <ChevronRight className="h-4 w-4 shrink-0 text-slate-300" />
             </button>
           ) : (
             <button key={type} onClick={() => createSession(type)}
               className={`${tile} border-2 border-dashed border-slate-300 bg-white/60 active:bg-white`}>
-              <span className={`${iconWrap} ${color}`}><Icon className="h-7 w-7" /></span>
+              <span className={`${iconWrap} ${color}`}><Icon className="h-5 w-5" /></span>
               <div className="min-w-0 flex-1">
-                <div className="font-bold capitalize text-slate-700">Start {type} session</div>
-                <div className="text-sm text-slate-500">Marks everyone present automatically</div>
+                <div className="text-sm font-bold capitalize text-slate-700">Start {type} session</div>
               </div>
-              <Plus className="h-5 w-5 shrink-0 text-slate-400" />
+              <Plus className="h-4 w-4 shrink-0 text-slate-400" />
             </button>
           )
         })}
 
         <button onClick={() => navigate('/timings/entry')}
           className={`${tile} bg-sky-600 text-white shadow-sm active:bg-sky-700`}>
-          <span className={`${iconWrap} bg-white/15`}><Timer className="h-7 w-7" /></span>
+          <span className={`${iconWrap} bg-white/15`}><Timer className="h-5 w-5" /></span>
           <div className="min-w-0 flex-1">
-            <div className="font-bold">Record Timings</div>
-            <div className="text-sm text-sky-100">Pick a set, type times, done</div>
+            <div className="text-sm font-bold">Record Timings</div>
           </div>
-          <ChevronRight className="h-5 w-5 shrink-0 text-sky-200" />
-        </button>
-
-        <button onClick={() => navigate('/students')}
-          className={`${tile} bg-white shadow-sm active:bg-slate-50`}>
-          <span className={`${iconWrap} bg-slate-100 text-slate-600`}><Users className="h-7 w-7" /></span>
-          <div className="min-w-0 flex-1">
-            <div className="font-bold text-slate-800">{students.length} active students</div>
-            <div className="text-sm text-slate-500">Roster, progress & timings</div>
-          </div>
-          <ChevronRight className="h-5 w-5 shrink-0 text-slate-300" />
+          <ChevronRight className="h-4 w-4 shrink-0 text-sky-200" />
         </button>
 
         {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
