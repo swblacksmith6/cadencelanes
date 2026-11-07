@@ -61,11 +61,11 @@ export default function StudentForm() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <h1 className="text-2xl font-bold text-slate-800">{isEdit ? 'Edit Student' : 'Add Student'}</h1>
-      {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+      <h1 className="text-2xl font-extrabold tracking-tight text-slate-800">{isEdit ? 'Edit Student' : 'Add Student'}</h1>
+      {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
       <form onSubmit={submit} className="space-y-6">
-        <section className="rounded-xl bg-white p-5 shadow-sm">
+        <section className="rounded-2xl bg-white p-5 shadow-sm">
           <h2 className="mb-4 font-semibold text-slate-800">Student details</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Name *">
@@ -91,7 +91,7 @@ export default function StudentForm() {
 
         <ContactSection title="Parent Contact 1 (Primary)" contact={contact1} setContact={setContact1} />
 
-        <section className="rounded-xl bg-white p-5 shadow-sm">
+        <section className="rounded-2xl bg-white p-5 shadow-sm">
           <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
             <input type="checkbox" checked={hasContact2} onChange={(e) => setHasContact2(e.target.checked)} />
             Add second contact
@@ -104,7 +104,7 @@ export default function StudentForm() {
         </section>
 
         <div className="flex gap-3">
-          <button disabled={loading} className="rounded-lg bg-sky-600 px-6 py-2 font-semibold text-white hover:bg-sky-700 disabled:opacity-50">
+          <button disabled={loading} className="rounded-full bg-sky-600 px-6 py-2 font-semibold text-white hover:bg-sky-700 disabled:opacity-50">
             {loading ? 'Saving…' : 'Save Student'}
           </button>
           <button type="button" onClick={() => navigate('/students')} className="rounded-lg border border-slate-300 px-6 py-2 text-slate-600 hover:bg-slate-50">
@@ -113,7 +113,7 @@ export default function StudentForm() {
         </div>
       </form>
 
-      <style>{`.input { width: 100%; border: 1px solid #cbd5e1; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; } .input:focus { outline: none; border-color: #0ea5e9; }`}</style>
+      <style>{`.input { width: 100%; border: 1px solid #c0d4ca; border-radius: 0.75rem; padding: 0.625rem 0.875rem; font-size: 1rem; background: #fff; } .input:focus { outline: none; border-color: #7b60f0; }`}</style>
     </div>
   )
 }
@@ -129,7 +129,7 @@ function Field({ label, children }) {
 
 function ContactSection({ title, contact, setContact }) {
   return (
-    <section className="rounded-xl bg-white p-5 shadow-sm">
+    <section className="rounded-2xl bg-white p-5 shadow-sm">
       <div className="mb-4 flex items-center gap-2">
         <h2 className="font-semibold text-slate-800">{title}</h2>
         <span className="rounded-full bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-700">Primary</span>

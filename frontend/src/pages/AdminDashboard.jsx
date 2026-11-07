@@ -82,11 +82,11 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-dvh bg-slate-100">
       <header className="flex items-center justify-between bg-slate-800 px-6 py-3 text-white">
         <div className="flex items-center gap-2">
           <Waves className="h-6 w-6 text-sky-400" />
-          <span className="font-bold">SwimAcademy Admin</span>
+          <span className="font-bold">Cadence Lanes Admin</span>
         </div>
         <button onClick={() => { logout(); navigate('/login') }}
           className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-slate-700">
@@ -96,27 +96,27 @@ export default function AdminDashboard() {
 
       <main className="mx-auto max-w-5xl space-y-4 p-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-slate-800">Clubs</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-800">Clubs</h1>
           <button onClick={() => setShowForm((v) => !v)}
-            className="flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-700">
+            className="flex items-center gap-2 rounded-full bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-700">
             <Plus className="h-4 w-4" /> Add club
           </button>
         </div>
 
         {showForm && (
-          <form onSubmit={createClub} className="grid gap-3 rounded-xl bg-white p-4 shadow-sm sm:grid-cols-4">
+          <form onSubmit={createClub} className="grid gap-3 rounded-2xl bg-white p-4 shadow-sm sm:grid-cols-4">
             <input required placeholder="Club name" value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+              className="rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm" />
             <input required placeholder="Head coach name" value={form.head_coach_name}
               onChange={(e) => setForm({ ...form, head_coach_name: e.target.value })}
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+              className="rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm" />
             <input required type="tel" placeholder="Head coach phone (10 digits)" pattern="[0-9]{10}"
               value={form.head_coach_phone}
               onChange={(e) => setForm({ ...form, head_coach_phone: e.target.value })}
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+              className="rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm" />
             <button disabled={saving}
-              className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50">
+              className="rounded-full bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50">
               {saving ? 'Creating...' : 'Create and approve'}
             </button>
           </form>
@@ -133,12 +133,12 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+        {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
         {!clubs ? (
           <LoadingSpinner />
         ) : (
-          <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+          <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-slate-200 text-slate-500">

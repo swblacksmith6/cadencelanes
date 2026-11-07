@@ -49,20 +49,20 @@ export default function SessionList() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-800">Sessions</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-800">Sessions</h1>
         <button onClick={() => navigate(`/sessions/new?date=${date}`)}
-          className="flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700">
+          className="flex items-center gap-2 rounded-full bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700">
           <Plus className="h-4 w-4" /> Other Session
         </button>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <button onClick={() => shiftDay(-1)} className="rounded-lg border border-slate-300 p-2 hover:bg-slate-50">
           <ChevronLeft className="h-4 w-4" />
         </button>
         <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none" />
+          className="rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-sky-500 focus:outline-none" />
         <button onClick={() => shiftDay(1)} className="rounded-lg border border-slate-300 p-2 hover:bg-slate-50">
           <ChevronRight className="h-4 w-4" />
         </button>
@@ -71,7 +71,7 @@ export default function SessionList() {
         )}
       </div>
 
-      {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+      {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
       {!sessions ? (
         <LoadingSpinner />
       ) : (
@@ -79,7 +79,7 @@ export default function SessionList() {
           {['morning', 'evening'].map((type) => {
             const s = sessions.find((x) => x.session_type === type)
             return (
-              <div key={type} className="rounded-xl bg-white p-5 shadow-sm">
+              <div key={type} className="rounded-2xl bg-white p-5 shadow-sm">
                 <div className="mb-3 flex items-center gap-2">
                   {typeIcon(type)}
                   <h2 className="font-semibold capitalize text-slate-800">{type} session</h2>
@@ -90,7 +90,7 @@ export default function SessionList() {
                   <div className="space-y-3">
                     <p className="text-sm text-slate-500">Not created yet.</p>
                     <button onClick={() => createSession(type)}
-                      className="rounded-lg border border-sky-600 px-4 py-2 text-sm font-medium text-sky-600 hover:bg-sky-50">
+                      className="rounded-full border border-sky-600 px-4 py-2 text-sm font-medium text-sky-600 hover:bg-sky-50">
                       Create Session
                     </button>
                   </div>
@@ -100,7 +100,7 @@ export default function SessionList() {
           })}
 
           {otherSessions.map((s) => (
-            <div key={s.id} className="rounded-xl bg-white p-5 shadow-sm">
+            <div key={s.id} className="rounded-2xl bg-white p-5 shadow-sm">
               <div className="mb-3 flex items-center gap-2">
                 {typeIcon(s.session_type)}
                 <h2 className="font-semibold capitalize text-slate-800">{s.session_type} session</h2>
@@ -124,7 +124,7 @@ function SessionCardBody({ session, onView }) {
       </div>
       {session.notes && <p className="text-sm text-slate-500">{session.notes}</p>}
       <button onClick={onView}
-        className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700">
+        className="rounded-full bg-sky-600 px-4 py-2 text-sm font-medium text-white hover:bg-sky-700">
         View Attendance
       </button>
     </div>

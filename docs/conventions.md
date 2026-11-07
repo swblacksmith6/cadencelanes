@@ -37,6 +37,9 @@ Use `get_logger("app.<area>")` and `log_event(log, logging.LEVEL, "event_name", 
 - Tests sit next to the file (`Foo.test.jsx`). `src/test/setup.js` provides an in-memory `localStorage`.
 - Everything needs the internet. Do not add offline caching of API data or a write queue (see [decisions.md](decisions.md)).
 - Styling is Tailwind utility classes. Icons from `lucide-react`.
+- Theme is Tidepool, defined once in `frontend/src/index.css` under `@theme`. The classes keep Tailwind's names but the colours are remapped: `slate-*` are the sea-glass and forest neutrals, `sky-*` is the violet accent, `green/red/amber-*` are the status colours. Use those names; do not add hex colours in components (chart strokes are the exception: violet `#5b3fd6`, grid `#d6e4dd`).
+- Fonts are Plus Jakarta Sans and DM Mono, bundled from `@fontsource` (no font host).
+- Phone first: use `md:` to widen. Lists with many columns render as cards under `md` and as a table from `md` up. Use `px-safe`, `pt-safe`, `pb-safe` for fixed bars and `min-h-dvh` instead of `min-h-screen`.
 
 ## General
 

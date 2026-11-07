@@ -40,20 +40,20 @@ export default function SessionCreate() {
 
   return (
     <div className="mx-auto max-w-md space-y-6">
-      <h1 className="text-2xl font-bold text-slate-800">Create Session</h1>
-      {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+      <h1 className="text-2xl font-extrabold tracking-tight text-slate-800">Create Session</h1>
+      {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
-      <form onSubmit={submit} className="space-y-4 rounded-xl bg-white p-5 shadow-sm">
+      <form onSubmit={submit} className="space-y-4 rounded-2xl bg-white p-5 shadow-sm">
         <div>
           <label className="mb-1 block text-sm font-medium text-slate-700">Date</label>
           <input type="date" value={form.session_date} required
             onChange={(e) => setForm({ ...form, session_date: e.target.value })}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none" />
+            className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-sky-500 focus:outline-none" />
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-slate-700">Type</label>
           <select value={form.session_type} onChange={(e) => setForm({ ...form, session_type: e.target.value })}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm capitalize focus:border-sky-500 focus:outline-none">
+            className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm capitalize focus:border-sky-500 focus:outline-none">
             {PRESET_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
             <option value="__custom__">Custom…</option>
           </select>
@@ -63,18 +63,18 @@ export default function SessionCreate() {
             <label className="mb-1 block text-sm font-medium text-slate-700">Custom type name</label>
             <input value={customType} required placeholder="e.g. district meet"
               onChange={(e) => setCustomType(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none" />
+              className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-sky-500 focus:outline-none" />
           </div>
         )}
         <div>
           <label className="mb-1 block text-sm font-medium text-slate-700">Notes (optional)</label>
           <textarea value={form.notes} rows={2} onChange={(e) => setForm({ ...form, notes: e.target.value })}
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none" />
+            className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-sky-500 focus:outline-none" />
         </div>
         <p className="text-xs text-slate-500">
           One session per type per day. Attendance is auto-created for all active students, marked present.
         </p>
-        <button disabled={loading} className="rounded-lg bg-sky-600 px-6 py-2 font-semibold text-white hover:bg-sky-700 disabled:opacity-50">
+        <button disabled={loading} className="rounded-full bg-sky-600 px-6 py-2 font-semibold text-white hover:bg-sky-700 disabled:opacity-50">
           {loading ? 'Creating…' : 'Create Session'}
         </button>
       </form>

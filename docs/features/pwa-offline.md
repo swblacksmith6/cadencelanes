@@ -1,7 +1,7 @@
 # PWA and offline behaviour
 
 ## Purpose
-Coaches install the app on their phones. Everything needs the internet: when offline the app opens and shows a red blocking screen telling the user to connect. No data is cached and nothing can be entered offline.
+Coaches install the app on their phones. The app is named Cadence Lanes; theme and background colour are forest green `#10332c`. Fonts are bundled and precached with the shell (`woff2` is in the workbox glob). Everything needs the internet: when offline the app opens and shows a red blocking screen telling the user to connect. No data is cached and nothing can be entered offline.
 
 ## Behaviour
 - Built with `vite-plugin-pwa` (`frontend/vite.config.js`). Manifest: name SwimAcademy, `display: standalone`, theme `#1e293b`, icons in `frontend/public` (192, 512, maskable 512, `apple-touch-icon.png`; these are placeholders to replace with real artwork). `index.html` carries the mobile and iOS meta tags.

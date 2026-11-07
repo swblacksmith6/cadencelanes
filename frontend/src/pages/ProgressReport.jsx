@@ -100,7 +100,7 @@ export default function ProgressReport() {
     }
   }
 
-  if (error && !report) return <div className="rounded-lg bg-red-50 p-4 text-red-700">{error}</div>
+  if (error && !report) return <div className="rounded-xl bg-red-50 p-4 text-red-700">{error}</div>
   if (!report) return <LoadingSpinner />
 
   const { student, attendance, personal_bests, timing_trends, skill_ratings, recent_notes } = report
@@ -108,22 +108,22 @@ export default function ProgressReport() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
-      <div className="flex items-start justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <Link to="/students" className="no-print text-sm text-sky-600 hover:underline">← Students</Link>
-          <h1 className="mt-1 text-2xl font-bold text-slate-800">{student.name}</h1>
+          <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-800">{student.name}</h1>
           <p className="text-sm text-slate-500">
             Age {exactAge(student.date_of_birth)} · Enrolled since {student.enrolled_since}
           </p>
         </div>
         <button onClick={() => window.print()}
-          className="no-print flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50">
+          className="no-print flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-sm text-slate-600 hover:bg-slate-50">
           <Printer className="h-4 w-4" /> Print
         </button>
       </div>
 
       {/* Attendance */}
-      <section className="rounded-xl bg-white p-5 shadow-sm">
+      <section className="rounded-2xl bg-white p-5 shadow-sm">
         <h2 className="mb-4 font-semibold text-slate-800">Attendance</h2>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           <AttendanceRing label="Last 7 days" data={attendance.last_7_days} />
@@ -139,12 +139,13 @@ export default function ProgressReport() {
       </section>
 
       {/* Personal bests */}
-      <section className="rounded-xl bg-white p-5 shadow-sm">
+      <section className="rounded-2xl bg-white p-5 shadow-sm">
         <h2 className="mb-4 font-semibold text-slate-800">Personal Bests</h2>
         {personal_bests.length === 0 ? (
           <p className="text-sm text-slate-500">No timings recorded yet.</p>
         ) : (
-          <table className="w-full text-left text-sm">
+          <div className="-mx-1 overflow-x-auto px-1">
+          <table className="w-full min-w-[30rem] text-left text-sm">
             <thead>
               <tr className="border-b border-slate-200 text-slate-500">
                 <th className="py-2">Style</th>
@@ -170,33 +171,34 @@ export default function ProgressReport() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </section>
 
       {/* Timing trends */}
       {trendKeys.length > 0 && (
-        <section className="rounded-xl bg-white p-5 shadow-sm">
-          <div className="mb-4 flex items-center justify-between">
+        <section className="rounded-2xl bg-white p-5 shadow-sm">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <h2 className="font-semibold text-slate-800">Timing Trends</h2>
             <select value={trendKey} onChange={(e) => setTrendKey(e.target.value)}
-              className="no-print rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none">
+              className="no-print rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none">
               {trendKeys.map((k) => <option key={k} value={k}>{timing_trends[k].label}</option>)}
             </select>
           </div>
           <ResponsiveContainer width="100%" height={260}>
             <LineChart data={timing_trends[trendKey]?.data || []}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#d6e4dd" />
               <XAxis dataKey="date" tick={{ fontSize: 12 }} />
               <YAxis unit="s" domain={['auto', 'auto']} tick={{ fontSize: 12 }} />
               <Tooltip formatter={(v) => [`${v}s`, 'Time']} />
-              <Line type="monotone" dataKey="time" stroke="#0284c7" strokeWidth={2} dot={{ r: 3 }} />
+              <Line type="monotone" dataKey="time" stroke="#5b3fd6" strokeWidth={2} dot={{ r: 3 }} />
             </LineChart>
           </ResponsiveContainer>
         </section>
       )}
 
       {/* Skill ratings */}
-      <section className="rounded-xl bg-white p-5 shadow-sm">
+      <section className="rounded-2xl bg-white p-5 shadow-sm">
         <h2 className="mb-4 font-semibold text-slate-800">Skill Ratings</h2>
 
         <form onSubmit={addAssessment} className="no-print mb-5 rounded-lg bg-slate-50 p-3">
@@ -223,7 +225,7 @@ export default function ProgressReport() {
               {assessRating ? RATING_LABELS[assessRating] : 'Tap stars to rate'}
             </span>
             <button disabled={savingAssess || !assessRating}
-              className="ml-auto rounded-lg bg-sky-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-sky-700 disabled:opacity-40">
+              className="ml-auto rounded-full bg-sky-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-sky-700 disabled:opacity-40">
               {savingAssess ? 'Saving…' : 'Save Rating'}
             </button>
           </div>
@@ -251,7 +253,7 @@ export default function ProgressReport() {
       </section>
 
       {/* Coach notes */}
-      <section className="rounded-xl bg-white p-5 shadow-sm">
+      <section className="rounded-2xl bg-white p-5 shadow-sm">
         <h2 className="mb-4 font-semibold text-slate-800">Coach Notes</h2>
 
         <form onSubmit={addNote} className="no-print mb-5 space-y-2 rounded-lg bg-slate-50 p-3">
@@ -261,7 +263,7 @@ export default function ProgressReport() {
             required
             rows={2}
             placeholder="Add an observation… e.g. Breathing rhythm improving on freestyle"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
+            className="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm focus:border-sky-500 focus:outline-none"
           />
           <div className="flex items-center justify-between">
             <div className="flex flex-wrap gap-1.5">
@@ -275,13 +277,13 @@ export default function ProgressReport() {
               ))}
             </div>
             <button disabled={savingNote || !noteText.trim()}
-              className="rounded-lg bg-sky-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-sky-700 disabled:opacity-40">
+              className="rounded-full bg-sky-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-sky-700 disabled:opacity-40">
               {savingNote ? 'Saving…' : 'Add Note'}
             </button>
           </div>
         </form>
 
-        {error && <div className="no-print mb-3 rounded-lg bg-red-50 p-2 text-sm text-red-700">{error}</div>}
+        {error && <div className="no-print mb-3 rounded-xl bg-red-50 p-2 text-sm text-red-700">{error}</div>}
         {recent_notes.length === 0 ? (
           <p className="text-sm text-slate-500">No notes yet.</p>
         ) : (
@@ -312,7 +314,7 @@ function AttendanceRing({ label, data }) {
     <div className="flex flex-col items-center">
       <div
         className="flex h-20 w-20 items-center justify-center rounded-full"
-        style={{ background: `conic-gradient(#0284c7 ${pct * 3.6}deg, #e2e8f0 0deg)` }}
+        style={{ background: `conic-gradient(#5b3fd6 ${pct * 3.6}deg, #d6e4dd 0deg)` }}
       >
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-sm font-bold text-slate-800">
           {data.total ? `${Math.round(pct)}%` : '—'}

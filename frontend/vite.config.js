@@ -10,15 +10,15 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'SwimAcademy',
-        short_name: 'SwimAcademy',
+        name: 'Cadence Lanes',
+        short_name: 'Cadence Lanes',
         description: 'Swim academy attendance, timings and progress',
         start_url: '/',
         scope: '/',
         display: 'standalone',
         orientation: 'portrait',
-        background_color: '#1e293b',
-        theme_color: '#1e293b',
+        background_color: '#10332c',
+        theme_color: '#10332c',
         icons: [
           { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
@@ -28,7 +28,7 @@ export default defineConfig({
       workbox: {
         // App shell only, so the app can open offline and show the offline screen.
         // API responses are never cached: everything else needs the internet.
-        globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+        globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [],

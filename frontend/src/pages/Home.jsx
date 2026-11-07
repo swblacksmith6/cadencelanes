@@ -7,20 +7,20 @@ export default function Home() {
   if (user) return <Navigate to={user.role === 'super_admin' ? '/admin' : '/dashboard'} replace />
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-sky-600 to-sky-800 px-4 text-white">
-      <Waves className="mb-4 h-16 w-16 text-sky-200" />
-      <h1 className="text-4xl font-bold">SwimAcademy</h1>
-      <p className="mt-2 text-sky-100">Track every lap. Grow every swimmer.</p>
-      <div className="mt-10 flex gap-4">
+    <div className="flex min-h-dvh flex-col items-center justify-center bg-slate-800 px-6 pt-safe pb-safe text-center text-white">
+      <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-sky-600/90"><Waves className="h-12 w-12 text-white" /></div>
+      <h1 className="text-4xl font-extrabold tracking-tight">Cadence Lanes</h1>
+      <p className="mt-2 text-slate-300">Track every lap. Grow every swimmer.</p>
+      <div className="mt-10 flex w-full max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
         <Link
           to="/login"
-          className="rounded-lg bg-white px-8 py-3 font-semibold text-sky-700 shadow hover:bg-sky-50"
+          className="rounded-full bg-sky-400 px-8 py-3.5 text-center font-bold text-slate-900 shadow hover:bg-sky-300"
         >
           Login
         </Link>
         <Link
           to="/register"
-          className="rounded-lg border-2 border-white px-8 py-3 font-semibold text-white hover:bg-white/10"
+          className="rounded-full border-2 border-slate-400 px-8 py-3.5 text-center font-bold text-white hover:bg-white/10"
         >
           Register Club
         </Link>

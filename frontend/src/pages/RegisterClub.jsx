@@ -25,8 +25,8 @@ export default function RegisterClub() {
 
   if (done) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
-        <div className="w-full max-w-sm rounded-xl bg-white p-8 text-center shadow">
+      <div className="flex min-h-dvh items-center justify-center bg-slate-100 px-safe py-8">
+        <div className="w-full max-w-sm rounded-2xl bg-white p-8 text-center shadow">
           <CheckCircle className="mx-auto mb-4 h-12 w-12 text-green-500" />
           <h2 className="text-lg font-semibold text-slate-800">Registration submitted!</h2>
           <p className="mt-2 text-sm text-slate-600">You'll be notified once approved.</p>
@@ -37,14 +37,14 @@ export default function RegisterClub() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
-      <div className="w-full max-w-sm rounded-xl bg-white p-8 shadow">
+    <div className="flex min-h-dvh items-center justify-center bg-slate-100 px-safe py-8">
+      <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-sm sm:p-8">
         <div className="mb-6 flex items-center justify-center gap-2 text-sky-600">
           <Waves className="h-7 w-7" />
           <span className="text-xl font-bold">Register Your Club</span>
         </div>
 
-        {error && <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+        {error && <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
         <form onSubmit={submit} className="space-y-4">
           <div>
@@ -53,7 +53,7 @@ export default function RegisterClub() {
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               required
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-sky-500 focus:outline-none"
+              className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-sky-500 focus:outline-none"
             />
           </div>
           <div>
@@ -62,7 +62,7 @@ export default function RegisterClub() {
               value={form.head_coach_name}
               onChange={(e) => setForm({ ...form, head_coach_name: e.target.value })}
               required
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-sky-500 focus:outline-none"
+              className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-sky-500 focus:outline-none"
             />
           </div>
           <div>
@@ -74,12 +74,12 @@ export default function RegisterClub() {
               required
               pattern="[0-9]{10}"
               placeholder="10-digit phone"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 focus:border-sky-500 focus:outline-none"
+              className="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-sky-500 focus:outline-none"
             />
           </div>
           <button
             disabled={loading}
-            className="w-full rounded-lg bg-sky-600 py-2 font-semibold text-white hover:bg-sky-700 disabled:opacity-50"
+            className="w-full rounded-full bg-sky-600 py-3 font-bold text-white hover:bg-sky-700 disabled:opacity-50"
           >
             {loading ? 'Submitting…' : 'Submit Registration'}
           </button>

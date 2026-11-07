@@ -26,7 +26,7 @@ export default function OfflineScreen() {
     >
       <WifiOff size={64} />
       <h1 className="text-2xl font-bold">You are offline</h1>
-      <p className="max-w-xs text-lg">Connect to the internet to use SwimAcademy.</p>
+      <p className="max-w-xs text-lg">Connect to the internet to use Cadence Lanes.</p>
     </div>
   )
 }

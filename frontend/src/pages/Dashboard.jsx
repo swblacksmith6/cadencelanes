@@ -40,7 +40,7 @@ export default function Dashboard() {
     load()
   }, [user.club_id])
 
-  if (error) return <div className="rounded-lg bg-red-50 p-4 text-red-700">{error}</div>
+  if (error) return <div className="rounded-xl bg-red-50 p-4 text-red-700">{error}</div>
   if (!students) return <LoadingSpinner />
 
   const weekTotal = weekSessions.reduce((n, s) => n + s.total_count, 0)
@@ -64,60 +64,63 @@ export default function Dashboard() {
 
   // ── Coach mode: big-button poolside home ──
   if (mode === 'coach') {
+    const tile = 'flex w-full items-center gap-4 rounded-3xl p-4 text-left transition active:scale-[0.99]'
+    const iconWrap = 'flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl'
     return (
-      <div className="mx-auto max-w-md space-y-4">
-        <h1 className="text-xl font-bold text-slate-800">Today</h1>
+      <div className="mx-auto max-w-md space-y-3">
+        <h1 className="mb-1 text-2xl font-extrabold tracking-tight text-slate-800">Today</h1>
 
         {['morning', 'evening'].map((type) => {
           const s = todaySessions.find((x) => x.session_type === type)
           const Icon = type === 'morning' ? Sunrise : Sunset
-          const color = type === 'morning' ? 'text-amber-500' : 'text-indigo-500'
+          const color = type === 'morning' ? 'bg-amber-100 text-amber-600' : 'bg-sky-100 text-sky-600'
           return s ? (
             <button key={type} onClick={() => navigate(`/sessions/${s.id}/attendance`)}
-              className="flex w-full items-center gap-4 rounded-2xl bg-white p-5 text-left shadow-sm active:bg-slate-50">
-              <Icon className={`h-8 w-8 ${color}`} />
-              <div className="flex-1">
-                <div className="font-semibold capitalize text-slate-800">{type} session</div>
+              className={`${tile} bg-white shadow-sm active:bg-slate-50`}>
+              <span className={`${iconWrap} ${color}`}><Icon className="h-7 w-7" /></span>
+              <div className="min-w-0 flex-1">
+                <div className="font-bold capitalize text-slate-800">{type} session</div>
                 <div className="text-sm text-slate-500">
-                  {s.present_count} present · {s.absent_count} absent — tap for attendance
+                  {s.present_count} present · {s.absent_count} absent
                 </div>
+                <div className="text-xs font-semibold text-sky-600">Tap for attendance</div>
               </div>
-              <ChevronRight className="h-5 w-5 text-slate-300" />
+              <ChevronRight className="h-5 w-5 shrink-0 text-slate-300" />
             </button>
           ) : (
             <button key={type} onClick={() => createSession(type)}
-              className="flex w-full items-center gap-4 rounded-2xl border-2 border-dashed border-slate-300 bg-white/60 p-5 text-left active:bg-white">
-              <Icon className={`h-8 w-8 ${color}`} />
-              <div className="flex-1">
-                <div className="font-semibold capitalize text-slate-700">Start {type} session</div>
-                <div className="text-sm text-slate-400">Marks everyone present automatically</div>
+              className={`${tile} border-2 border-dashed border-slate-300 bg-white/60 active:bg-white`}>
+              <span className={`${iconWrap} ${color}`}><Icon className="h-7 w-7" /></span>
+              <div className="min-w-0 flex-1">
+                <div className="font-bold capitalize text-slate-700">Start {type} session</div>
+                <div className="text-sm text-slate-500">Marks everyone present automatically</div>
               </div>
-              <Plus className="h-5 w-5 text-slate-400" />
+              <Plus className="h-5 w-5 shrink-0 text-slate-400" />
             </button>
           )
         })}
 
         <button onClick={() => navigate('/timings/entry')}
-          className="flex w-full items-center gap-4 rounded-2xl bg-sky-600 p-5 text-left text-white shadow-sm active:bg-sky-700">
-          <Timer className="h-8 w-8" />
-          <div className="flex-1">
-            <div className="font-semibold">Record Timings</div>
+          className={`${tile} bg-sky-600 text-white shadow-sm active:bg-sky-700`}>
+          <span className={`${iconWrap} bg-white/15`}><Timer className="h-7 w-7" /></span>
+          <div className="min-w-0 flex-1">
+            <div className="font-bold">Record Timings</div>
             <div className="text-sm text-sky-100">Pick a set, type times, done</div>
           </div>
-          <ChevronRight className="h-5 w-5 text-sky-200" />
+          <ChevronRight className="h-5 w-5 shrink-0 text-sky-200" />
         </button>
 
         <button onClick={() => navigate('/students')}
-          className="flex w-full items-center gap-4 rounded-2xl bg-white p-5 text-left shadow-sm active:bg-slate-50">
-          <Users className="h-8 w-8 text-slate-400" />
-          <div className="flex-1">
-            <div className="font-semibold text-slate-800">{students.length} active students</div>
+          className={`${tile} bg-white shadow-sm active:bg-slate-50`}>
+          <span className={`${iconWrap} bg-slate-100 text-slate-600`}><Users className="h-7 w-7" /></span>
+          <div className="min-w-0 flex-1">
+            <div className="font-bold text-slate-800">{students.length} active students</div>
             <div className="text-sm text-slate-500">Roster, progress & timings</div>
           </div>
-          <ChevronRight className="h-5 w-5 text-slate-300" />
+          <ChevronRight className="h-5 w-5 shrink-0 text-slate-300" />
         </button>
 
-        {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+        {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
       </div>
     )
   }
@@ -125,7 +128,7 @@ export default function Dashboard() {
   // ── Analytics mode: full dashboard ──
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-slate-800">Dashboard</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight text-slate-800">Dashboard</h1>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard icon={<Users className="h-6 w-6 text-sky-600" />} label="Active students" value={students.length} />
@@ -135,21 +138,21 @@ export default function Dashboard() {
 
       <div className="flex flex-wrap gap-3">
         {!hasMorning && (
-          <button onClick={() => createSession('morning')} className="flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 font-medium text-white hover:bg-amber-600">
+          <button onClick={() => createSession('morning')} className="flex items-center gap-2 rounded-full bg-amber-500 px-4 py-2 font-medium text-white hover:bg-amber-600">
             <Sunrise className="h-4 w-4" /> Create Morning Session
           </button>
         )}
         {!hasEvening && (
-          <button onClick={() => createSession('evening')} className="flex items-center gap-2 rounded-lg bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-600">
+          <button onClick={() => createSession('evening')} className="flex items-center gap-2 rounded-full bg-indigo-500 px-4 py-2 font-medium text-white hover:bg-indigo-600">
             <Sunset className="h-4 w-4" /> Create Evening Session
           </button>
         )}
-        <Link to="/students/new" className="flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 font-medium text-white hover:bg-sky-700">
+        <Link to="/students/new" className="flex items-center gap-2 rounded-full bg-sky-600 px-4 py-2 font-medium text-white hover:bg-sky-700">
           <Plus className="h-4 w-4" /> Add Student
         </Link>
       </div>
 
-      <div className="rounded-xl bg-white p-5 shadow-sm">
+      <div className="rounded-2xl bg-white p-5 shadow-sm">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="font-semibold text-slate-800">Students</h2>
           <Link to="/students" className="text-sm text-sky-600 hover:underline">View all →</Link>
@@ -190,10 +193,10 @@ export default function Dashboard() {
 
 function StatCard({ icon, label, value }) {
   return (
-    <div className="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm">
+    <div className="flex items-center gap-4 rounded-2xl bg-white p-5 shadow-sm">
       <div className="rounded-lg bg-sky-50 p-3">{icon}</div>
       <div>
-        <div className="text-2xl font-bold text-slate-800">{value}</div>
+        <div className="text-2xl font-extrabold tracking-tight text-slate-800">{value}</div>
         <div className="text-sm text-slate-500">{label}</div>
       </div>
     </div>

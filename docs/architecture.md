@@ -59,7 +59,7 @@ All JSON under `/api`. Club routes are `/api/club/{club_id}/...`. Routers and pr
 - Routes in `frontend/src/App.jsx`: public (`/`, `/login`, `/register`), coach area under `Layout` (`/dashboard`, `/students`, `/sessions`, `/timings/entry`, ...),
   head coach only (`/coaches`), super admin (`/admin`). `ProtectedRoute` enforces roles.
 - Auth state: `AuthContext` keeps `access_token` and `user` in `localStorage`. `src/api/client.js` adds the bearer header and, on any 401 outside `/login`, clears storage and goes to `/login`.
-- Two UI modes (`ModeContext`): **coach** (phone, bottom tabs, poolside) and **analytics** (desktop, sidebar). Default by screen width (under 768 px is coach mode).
+- Two UI modes (`ModeContext`): **coach** (phone, bottom tabs, poolside) and **analytics** (desktop, sidebar). Under 768 px the layout is always coach mode, whatever was saved; the mode switch only shows on wider screens, where the saved choice applies (default analytics). `useMode()` returns `mode` (what to render), `preferred` and `narrow`.
 - `OfflineScreen` covers the whole app while the device is offline.
 
 ## Folder map
