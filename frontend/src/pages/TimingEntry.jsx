@@ -126,7 +126,7 @@ export default function TimingEntry() {
     }
   }
 
-  if (error && !sessions) return <div className="rounded-lg bg-red-50 p-4 text-red-700">{error}</div>
+  if (error && !sessions) return <div className="rounded-xl bg-red-50 p-4 text-red-700">{error}</div>
   if (!sessions) return <LoadingSpinner />
 
   // previous times already recorded in this session for the selected style+distance
@@ -140,20 +140,20 @@ export default function TimingEntry() {
 
   return (
     <div className="mx-auto max-w-lg space-y-5">
-      <h1 className="text-2xl font-bold text-slate-800">Record Timings</h1>
-      {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+      <h1 className="text-2xl font-extrabold tracking-tight text-slate-800">Record Timings</h1>
+      {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
       {/* Session — auto-picked, tap to switch */}
       {sessions.length === 0 ? (
-        <div className="rounded-xl bg-white p-5 shadow-sm">
+        <div className="rounded-2xl bg-white p-5 shadow-sm">
           <p className="mb-3 text-sm text-slate-600">No session today yet. Start one:</p>
           <div className="flex gap-3">
             <button onClick={() => createSession('morning')}
-              className="flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2.5 font-medium text-white hover:bg-amber-600">
+              className="flex items-center gap-2 rounded-full bg-amber-500 px-4 py-2.5 font-medium text-white hover:bg-amber-600">
               <Sunrise className="h-4 w-4" /> Morning
             </button>
             <button onClick={() => createSession('evening')}
-              className="flex items-center gap-2 rounded-lg bg-indigo-500 px-4 py-2.5 font-medium text-white hover:bg-indigo-600">
+              className="flex items-center gap-2 rounded-full bg-indigo-500 px-4 py-2.5 font-medium text-white hover:bg-indigo-600">
               <Sunset className="h-4 w-4" /> Evening
             </button>
           </div>
@@ -172,7 +172,7 @@ export default function TimingEntry() {
       )}
 
       {/* Set: style + distance chosen once, remembered */}
-      <div className="rounded-xl bg-white p-4 shadow-sm">
+      <div className="rounded-2xl bg-white p-4 shadow-sm">
         <div className="mb-2 flex flex-wrap gap-2">
           {styles.map((s) => (
             <button key={s.id} onClick={() => pickStyle(s.id)}
@@ -202,7 +202,7 @@ export default function TimingEntry() {
 
       {/* Swimmers: one tap-and-type row each */}
       {sessionId && (
-        <div className="divide-y divide-slate-100 rounded-xl bg-white shadow-sm">
+        <div className="divide-y divide-slate-100 rounded-2xl bg-white shadow-sm">
           {rows.map((row, idx) => {
             const prior = priorFor(row.student_id)
             return (
@@ -238,7 +238,7 @@ export default function TimingEntry() {
                   }`}
                 />
                 <button onClick={() => save(idx)} disabled={!row.input}
-                  className="rounded-lg bg-sky-600 p-2.5 text-white hover:bg-sky-700 disabled:opacity-30">
+                  className="rounded-full bg-sky-600 p-2.5 text-white hover:bg-sky-700 disabled:opacity-30">
                   <Check className="h-5 w-5" />
                 </button>
               </div>

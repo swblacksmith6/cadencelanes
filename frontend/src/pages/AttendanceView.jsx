@@ -51,7 +51,7 @@ export default function AttendanceView() {
     }
   }
 
-  if (error && !session) return <div className="rounded-lg bg-red-50 p-4 text-red-700">{error}</div>
+  if (error && !session) return <div className="rounded-xl bg-red-50 p-4 text-red-700">{error}</div>
   if (!session) return <LoadingSpinner />
 
   const present = rows.filter((r) => r.status === 'present').length
@@ -66,8 +66,8 @@ export default function AttendanceView() {
         <p className="text-sm text-slate-500">Created by {session.created_by_name}</p>
       </div>
 
-      <div className="flex items-center justify-between rounded-xl bg-white p-4 shadow-sm">
-        <div className="text-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-white p-4 shadow-sm">
+        <div className="flex flex-wrap items-center gap-y-1 text-sm">
           <span className="font-semibold text-green-600">{present} present</span>
           <span className="mx-2 text-slate-300">·</span>
           <span className="font-semibold text-red-500">{rows.length - present} absent</span>
@@ -77,21 +77,21 @@ export default function AttendanceView() {
         <div className="flex items-center gap-3">
           {saved && <span className="text-sm text-green-600">Saved ✓</span>}
           <button onClick={saveAll} disabled={!dirty || saving}
-            className="rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-700 disabled:opacity-40">
+            className="rounded-full bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-700 disabled:opacity-40">
             {saving ? 'Saving…' : 'Save All'}
           </button>
         </div>
       </div>
 
-      {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+      {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
-      <div className="divide-y divide-slate-100 rounded-xl bg-white shadow-sm">
+      <div className="divide-y divide-slate-100 rounded-2xl bg-white shadow-sm [&>div]:gap-3">
         {rows.map((r) => (
           <div key={r.student_id} className="flex items-center justify-between px-4 py-3">
-            <span className="font-medium text-slate-800">{r.student_name}</span>
+            <span className="min-w-0 truncate font-semibold text-slate-800">{r.student_name}</span>
             <button
               onClick={() => toggle(r.student_id)}
-              className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium transition ${
+              className={`flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${
                 r.status === 'present'
                   ? 'bg-green-100 text-green-700 hover:bg-green-200'
                   : 'bg-red-100 text-red-600 hover:bg-red-200'

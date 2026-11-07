@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cadence Lanes UI Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Mono:wght@400;500&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Manrope:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+/* Layout: page chrome is neutral; each tab shows one direction as three phone screens (Home, Attendance, Timing). */
+:root{--pg:#F4F5F7;--pg-ink:#16191D;--pg-muted:#5F6872;--pg-line:#DDE0E5;--pg-card:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--pg:#101215;--pg-ink:#ECEEF0;--pg-muted:#98A1AB;--pg-line:#2A2F36;--pg-card:#171A1E}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--pg);color:var(--pg-ink);font:15px/1.5 "Manrope",system-ui,sans-serif;padding-block:24px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1120px;margin:0 auto}
+header.top{display:flex;flex-wrap:wrap;gap:16px;align-items:end;justify-content:space-between;margin-bottom:20px}
+h1{font:800 28px/1.1 "Bricolage Grotesque",sans-serif;margin:0 0 4px}
+.sub{color:var(--pg-muted);margin:0;max-width:60ch}
+.seg{display:inline-flex;border:1px solid var(--pg-line);border-radius:10px;padding:3px;background:var(--pg-card)}
+.seg button{font:inherit;font-weight:600;font-size:13px;border:0;background:none;color:var(--pg-muted);padding:6px 14px;border-radius:7px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--pg-ink);color:var(--pg)}
+[role=tablist]{display:flex;gap:4px;border-bottom:1px solid var(--pg-line);margin-bottom:24px;overflow-x:auto}
+[role=tab]{font:inherit;font-weight:700;border:0;background:none;color:var(--pg-muted);padding:12px 16px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;white-space:nowrap}
+[role=tab][aria-selected="true"]{color:var(--pg-ink);border-color:var(--pg-ink)}
+button:focus-visible{outline:2px solid #3b82f6;outline-offset:2px}
+.concept{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;margin-bottom:28px}
+@media(max-width:760px){.concept{grid-template-columns:minmax(0,1fr)}}
+.concept h2{font:800 24px/1.15 "Bricolage Grotesque",sans-serif;margin:0 0 8px}
+.concept p{margin:0 0 10px;color:var(--pg-muted);max-width:62ch}
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}
+.sw div{border:1px solid var(--pg-line);border-radius:10px;overflow:hidden;background:var(--pg-card);font-size:12px}
+.sw i{display:block;height:44px}
+.sw span{display:block;padding:6px 8px;line-height:1.3}
+.sw b{display:block;font-weight:700}
+.sw small{color:var(--pg-muted);font-family:"DM Mono",monospace;font-size:11px}
+.type{margin-top:14px;padding:14px 16px;border:1px solid var(--pg-line);border-radius:10px;background:var(--pg-card)}
+.type .d{font-size:26px;line-height:1.1}
+.type .b{color:var(--pg-muted);font-size:13px;margin-top:6px}
+.stage{display:flex;flex-wrap:wrap;gap:28px;justify-content:center;padding:28px 12px;border:1px solid var(--pg-line);border-radius:16px;background:var(--pg-card)}
+.cap{text-align:center;font-size:12px;color:var(--pg-muted);margin-top:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+
+/* ---------- phone + shared mockup structure (tokens set by theme class) ---------- */
+.phone{width:288px;height:620px;border-radius:38px;border:8px solid #15181c;background:var(--bg);color:var(--ink);overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 18px 40px -18px rgba(0,0,0,.45);font-family:var(--body)}
+.sb{display:flex;justify-content:space-between;padding:10px 22px 4px;font-size:11px;font-weight:600;color:var(--on-hero);background:var(--hero);font-family:var(--body)}
+.scr{flex:1;overflow:hidden;display:flex;flex-direction:column;gap:12px;padding:0 0 8px}
+.hero{background:var(--hero);color:var(--on-hero);padding:6px 16px 18px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:var(--dw);font-size:15px;letter-spacing:var(--dls);text-transform:var(--dcase)}
+.brand svg{width:22px;height:22px;flex:none}
+.hero h3{font:var(--dw) 21px/1.15 var(--display);letter-spacing:var(--dls);margin:12px 0 2px;text-transform:var(--dcase)}
+.hero p{margin:0;font-size:12px;opacity:.78}
+.pad{padding:0 14px;display:flex;flex-direction:column;gap:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--rs);padding:9px 10px}
+.stat b{display:block;font:var(--nw) 20px/1.1 var(--num);font-variant-numeric:tabular-nums}
+.stat span{font-size:10.5px;color:var(--muted)}
+.lbl{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:2px 2px -4px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px}
+.row{display:flex;align-items:center;gap:10px}
+.row .grow{flex:1;min-width:0}
+.row b{font-size:13px;display:block}
+.row small{font-size:11px;color:var(--muted)}
+.chip{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:99px;background:var(--surface2);color:var(--ink);white-space:nowrap}
+.chip.good{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good)}
+.chip.warn{background:color-mix(in srgb,var(--warn) 20%,transparent);color:var(--warn)}
+.chip.pb{background:var(--primary);color:var(--on-primary)}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;border:0;font:700 13px var(--body);padding:11px 12px;border-radius:var(--rb);background:var(--primary);color:var(--on-primary);width:100%}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ico{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.nav{display:flex;justify-content:space-around;padding:8px 6px 12px;background:var(--surface);border-top:1px solid var(--line)}
+.nav div{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;font-weight:600;color:var(--muted);padding:4px 10px;border-radius:var(--rs)}
+.nav div.on{color:var(--primary)}
+.ava{width:30px;height:30px;border-radius:50%;background:var(--surface2);display:grid;place-items:center;font-size:11px;font-weight:700;flex:none}
+.pa{display:flex;border:1px solid var(--line);border-radius:var(--rs);overflow:hidden}
+.pa i{font-style:normal;font-size:11px;font-weight:700;padding:5px 10px;color:var(--muted)}
+.pa i.p{background:var(--good);color:#fff}
+.pa i.a{background:var(--bad);color:#fff}
+.prog{height:6px;border-radius:9px;background:var(--surface2);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--accent);border-radius:9px}
+.clock{text-align:center;padding:16px 10px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.clock .t{font:var(--nw) 44px/1 var(--num);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.clock .t em{font-style:normal;font-size:22px;color:var(--muted)}
+.clock small{display:block;margin-top:6px;font-size:11px;color:var(--muted)}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pills span{font-size:11px;font-weight:600;padding:5px 10px;border-radius:99px;border:1px solid var(--line);background:var(--surface)}
+.pills span.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.split{display:flex;justify-content:space-between;font:500 12px var(--num);font-variant-numeric:tabular-nums;padding:6px 0;border-bottom:1px dashed var(--line)}
+.split:last-child{border:0}
+.split span:first-child{color:var(--muted)}
+
+/* ---------- Direction 1: Deep Lane ---------- */
+.t1{--display:"Bricolage Grotesque",sans-serif;--body:"Manrope",sans-serif;--num:"Manrope",sans-serif;--dw:800;--nw:800;--dls:-.01em;--dcase:none;--r:16px;--rs:11px;--rb:12px;
+--bg:#EEF5F9;--surface:#FFFFFF;--surface2:#E1EDF4;--ink:#0A2540;--muted:#566F84;--line:#D2E1EB;--primary:#0F6CBD;--on-primary:#FFFFFF;--accent:#19B5A5;--good:#0E8A66;--warn:#B96A00;--bad:#D13B3B;--hero:#0A2540;--on-hero:#FFFFFF}
+.t1.dark{--bg:#08141F;--surface:#0F2233;--surface2:#173048;--ink:#E6F1F8;--muted:#8FA9BC;--line:#1E3B54;--primary:#4DA3EE;--on-primary:#04121D;--accent:#35D0BF;--good:#3CD6A3;--warn:#F0B050;--bad:#FF7A7A;--hero:#0F2233;--on-hero:#E6F1F8}
+.t1 .hero{border-radius:0 0 26px 26px;position:relative;overflow:hidden}
+.t1 .hero::after{content:"";position:absolute;inset:auto -10px 0 -10px;height:34px;background:repeating-linear-gradient(90deg,transparent 0 22px,color-mix(in srgb,var(--on-hero) 14%,transparent) 22px 23px);opacity:.7;-webkit-mask:linear-gradient(transparent,#000);mask:linear-gradient(transparent,#000)}
+
+/* ---------- Direction 2: Pace Clock ---------- */
+.t2{--display:"Barlow Condensed",sans-serif;--body:"IBM Plex Sans",sans-serif;--num:"IBM Plex Mono",monospace;--dw:700;--nw:500;--dls:.02em;--dcase:uppercase;--r:4px;--rs:3px;--rb:3px;
+--bg:#F2F3F0;--surface:#FFFFFF;--surface2:#E7E9E4;--ink:#14181B;--muted:#5E686F;--line:#D5D9D2;--primary:#14181B;--on-primary:#FFC933;--accent:#B88400;--good:#157F45;--warn:#A86A00;--bad:#C5352F;--hero:#14181B;--on-hero:#F2F3F0}
+.t2.dark{--bg:#0D1013;--surface:#161B20;--surface2:#212830;--ink:#F1F3F4;--muted:#8A96A0;--line:#2B343C;--primary:#F7B500;--on-primary:#141000;--accent:#F7B500;--good:#3DDC84;--warn:#F7B500;--bad:#FF5C5C;--hero:#0D1013;--on-hero:#F1F3F4}
+.t2 .hero{background:var(--hero);border-bottom:2px solid var(--primary);padding-bottom:14px}
+.t2.dark .hero{border-bottom-color:var(--primary)}
+.t2 .hero h3{font-size:30px;margin-top:10px}
+.t2 .brand{color:var(--on-primary);}
+.t2:not(.dark) .brand{color:#FFC933}
+.t2 .stat b{font-size:22px}
+.t2 .lbl{font-family:var(--display);font-size:13px;letter-spacing:.1em}
+.t2 .chip{border-radius:2px;font-family:var(--num);font-weight:500}
+.t2 .nav div.on{color:var(--accent);box-shadow:inset 0 2px 0 var(--accent);border-radius:0}
+.t2 .clock .t{font-size:46px}
+.t2 .clock{border-left:3px solid var(--primary)}
+.t2 .ava{border-radius:3px;font-family:var(--num)}
+.t2 .pills span{border-radius:3px}
+
+/* ---------- Direction 3: Tidepool ---------- */
+.t3{--display:"Plus Jakarta Sans",sans-serif;--body:"Plus Jakarta Sans",sans-serif;--num:"DM Mono",monospace;--dw:800;--nw:500;--dls:-.02em;--dcase:none;--r:22px;--rs:14px;--rb:99px;
+--bg:#E8F0EC;--surface:#F9FCFA;--surface2:#D6E4DD;--ink:#10332C;--muted:#587A70;--line:#C6D9D0;--primary:#5B3FD6;--on-primary:#FFFFFF;--accent:#5B3FD6;--good:#1C8657;--warn:#A8690A;--bad:#C13E3C;--hero:#10332C;--on-hero:#E8F0EC}
+.t3.dark{--bg:#0B1A17;--surface:#12261F;--surface2:#1B362D;--ink:#E3F0EA;--muted:#8AAA9F;--line:#25463B;--primary:#A18FFF;--on-primary:#150C40;--accent:#A18FFF;--good:#4BD29A;--warn:#F0B452;--bad:#FF8582;--hero:#143028;--on-hero:#E3F0EA}
+.t3 .sb{background:var(--bg);color:var(--ink)}
+.t3 .hero{margin:6px 12px 0;border-radius:26px;padding:14px 16px 18px}
+.t3 .nav{margin:0 12px 10px;border:1px solid var(--line);border-radius:99px;padding:6px 8px}
+.t3 .nav div{border-radius:99px;padding:6px 12px}
+.t3 .nav div.on{background:var(--primary);color:var(--on-primary)}
+.t3 .stat{border-radius:18px}
+.t3 .chip{padding:4px 10px}
+.t3 .ava{background:var(--primary);color:var(--on-primary);opacity:.92}
+.t3 .pa{border-radius:99px}
+.t3 .prog i{background:var(--primary)}
+.t3 .clock{border-radius:28px;background:var(--hero);color:var(--on-hero);border:0}
+.t3 .clock small{color:var(--on-hero);opacity:.7}
+.t3 .clock .t em{color:var(--on-hero);opacity:.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Cadence Lanes</h1>
+      <p class="sub">Three visual directions for the app. Same screens, same features; only colour, type and component styling change. Pick the tab you like and we apply it across the app.</p>
+    </div>
+    <div class="seg" role="group" aria-label="Mockup theme">
+      <button id="mLight" type="button" aria-pressed="true">Light</button>
+      <button id="mDark" type="button" aria-pressed="false">Dark</button>
+    </div>
+  </header>
+  <div role="tablist" aria-label="Design directions" id="tabs"></div>
+  <div id="panel"></div>
+</div>
+
+<script>
+var ICON={
+home:'<svg class="ico" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>',
+users:'<svg class="ico" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><path d="M16 4.8a3.5 3.5 0 010 6.4M18 14.8c2 .6 3.3 2.3 3.6 5.2"/></svg>',
+cal:'<svg class="ico" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+timer:'<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9M9.5 2.5h5"/></svg>',
+plus:'<svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
+sun:'<svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg>',
+moon:'<svg class="ico" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z"/></svg>',
+chev:'<svg class="ico" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>'
+};
+var LOGO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 8c2.5-2 4.5-2 7 0s4.5 2 7 0 3-1.5 6-.5"/><path d="M2 13c2.5-2 4.5-2 7 0s4.5 2 7 0 3-1.5 6-.5"/><path d="M2 18c2.5-2 4.5-2 7 0s4.5 2 7 0 3-1.5 6-.5"/></svg>';
+function nav(a){var n=[['home','Home'],['users','Swimmers'],['cal','Sessions'],['timer','Timing']];
+ return '<div class="nav">'+n.map(function(x,i){return '<div'+(i===a?' class="on"':'')+'>'+ICON[x[0]]+x[1]+'</div>'}).join('')+'</div>'}
+function sb(){return '<div class="sb"><span>6:12</span><span>Cadence Lanes</span></div>'}
+function home(){return '<div class="phone">'+sb()+'<div class="scr">'+
+ '<div class="hero"><div class="brand">'+LOGO+'Cadence Lanes</div><h3>Good morning, Coach Priya</h3><p>Saturday, 7 November</p></div>'+
+ '<div class="pad"><div class="stats"><div class="stat"><b>42</b><span>Swimmers</span></div><div class="stat"><b>86%</b><span>Week attendance</span></div><div class="stat"><b>2</b><span>Today</span></div></div>'+
+ '<div class="lbl">Today</div>'+
+ '<div class="card row"><span class="chip warn">AM</span><div class="grow"><b>Morning session</b><small>5:30 to 7:00, 31 of 36 in</small></div>'+ICON.chev+'</div>'+
+ '<div class="card row"><span class="chip">PM</span><div class="grow"><b>Evening session</b><small>Not started</small></div><span class="chip pb" style="display:flex;gap:4px;align-items:center">'+ICON.plus+'Start</span></div>'+
+ '<div class="two"><button class="btn">'+ICON.timer+'Enter times</button><button class="btn ghost">'+ICON.users+'Swimmers</button></div></div>'+
+ '</div>'+nav(0)+'</div>'}
+function att(){var r=[['AM','Aarav Menon','11y 2m','p'],['DR','Diya Rao','9y 8m','p'],['KS','Kabir Shetty','12y 1m','a'],['MN','Meera Nair','10y 4m','p'],['RI','Rohan Iyer','13y 6m','p'],['AD','Anaya Das','8y 11m','']];
+ return '<div class="phone">'+sb()+'<div class="scr">'+
+ '<div class="hero"><div class="brand">'+LOGO+'Attendance</div><h3>Morning session</h3><p>Sat 7 Nov, 5:30 to 7:00</p></div>'+
+ '<div class="pad"><div class="card"><div class="row" style="margin-bottom:8px"><b class="grow" style="font-size:12px">4 of 6 marked present</b><span class="chip good">67%</span></div><div class="prog"><i style="width:67%"></i></div></div>'+
+ r.map(function(x){return '<div class="card row" style="padding:8px 10px"><div class="ava">'+x[0]+'</div><div class="grow"><b>'+x[1]+'</b><small>'+x[2]+'</small></div><div class="pa"><i class="'+(x[3]==='p'?'p':'')+'">P</i><i class="'+(x[3]==='a'?'a':'')+'">A</i></div></div>'}).join('')+
+ '</div></div>'+nav(2)+'</div>'}
+function tim(){return '<div class="phone">'+sb()+'<div class="scr">'+
+ '<div class="hero"><div class="brand">'+LOGO+'Timing</div><h3>Aarav Menon</h3><p>Group III, 11y 2m 5d</p></div>'+
+ '<div class="pad"><div class="pills"><span>25m</span><span class="on">50m</span><span>100m</span><span>200m</span></div>'+
+ '<div class="pills"><span class="on">Freestyle</span><span>Back</span><span>Breast</span><span>Fly</span></div>'+
+ '<div class="clock"><div class="t">0:31<em>.</em>42</div><small>Personal best 0:32.07 <span class="chip pb">New PB</span></small></div>'+
+ '<button class="btn">Save time</button>'+
+ '<div class="card" style="padding:6px 12px"><div class="split"><span>Today</span><span>0:31.42</span></div><div class="split"><span>31 Oct</span><span>0:32.07</span></div><div class="split"><span>24 Oct</span><span>0:32.88</span></div></div></div>'+
+ '</div>'+nav(3)+'</div>'}
+
+var THEMES=[
+{id:'t1',name:'Deep Lane',def:'light',
+ line:'Clean, trustworthy and calm. Pool blues and a bright aqua, with a deep navy header carrying faint lane markings. Rounded cards, friendly type. Reads well in bright poolside sun.',
+ sw:[['Navy','#0A2540'],['Lane blue','#0F6CBD'],['Aqua','#19B5A5'],['Foam','#EEF5F9'],['Surface','#FFFFFF'],['Alert red','#D13B3B']],
+ swd:[['Abyss','#08141F'],['Sky','#4DA3EE'],['Aqua','#35D0BF'],['Panel','#0F2233'],['Line','#1E3B54'],['Alert','#FF7A7A']],
+ fonts:'Bricolage Grotesque for headings, Manrope for text', dfont:'"Bricolage Grotesque"',dw:800},
+{id:'t2',name:'Pace Clock',def:'dark',
+ line:'Built around the pool-deck pace clock. Charcoal with a signal amber, condensed uppercase headings, monospaced times, tight square corners. Dense and fast to scan with wet hands. Light mode swaps to ink on paper.',
+ sw:[['Ink','#14181B'],['Amber','#FFC933'],['Paper','#F2F3F0'],['Surface','#FFFFFF'],['Rule','#D5D9D2'],['Go green','#157F45']],
+ swd:[['Charcoal','#0D1013'],['Amber','#F7B500'],['Panel','#161B20'],['Rule','#2B343C'],['Go green','#3DDC84'],['Stop red','#FF5C5C']],
+ fonts:'Barlow Condensed for headings, IBM Plex Sans for text, IBM Plex Mono for times', dfont:'"Barlow Condensed"',dw:700,up:true},
+{id:'t3',name:'Tidepool',def:'light',
+ line:'Soft and modern. Sea-glass greens with deep forest ink and one violet accent. Pill buttons, a floating navigation bar and a large rounded header. Feels like a consumer app that parents would also be happy to see.',
+ sw:[['Forest','#10332C'],['Violet','#5B3FD6'],['Sea glass','#E8F0EC'],['Surface','#F9FCFA'],['Mist','#D6E4DD'],['Alert','#C13E3C']],
+ swd:[['Deep pine','#0B1A17'],['Lilac','#A18FFF'],['Panel','#12261F'],['Mist','#1B362D'],['Line','#25463B'],['Alert','#FF8582']],
+ fonts:'Plus Jakarta Sans for headings and text, DM Mono for times', dfont:'"Plus Jakarta Sans"',dw:800}
+];
+var mode={t1:'light',t2:'dark',t3:'light'}, cur=0, dark=false;
+function esc(s){return s}
+function render(){
+ var T=THEMES[cur], m=mode[T.id], d=m==='dark', sw=d?T.swd:T.sw;
+ document.getElementById('mLight').setAttribute('aria-pressed',!d);
+ document.getElementById('mDark').setAttribute('aria-pressed',d);
+ document.getElementById('panel').innerHTML=
+ '<section role="tabpanel" aria-label="'+T.name+'"><div class="concept"><div><h2>'+(cur+1)+'. '+T.name+'</h2><p>'+T.line+'</p>'+
+ '<div class="type"><div class="d" style="font-family:'+T.dfont+',sans-serif;font-weight:'+T.dw+(T.up?';text-transform:uppercase;letter-spacing:.03em':'')+'">Cadence Lanes</div><div class="b">'+T.fonts+'</div></div></div>'+
+ '<div><div class="sw">'+sw.map(function(c){return '<div><i style="background:'+c[1]+'"></i><span><b>'+c[0]+'</b><small>'+c[1]+'</small></span></div>'}).join('')+'</div></div></div>'+
+ '<div class="stage '+T.id+(d?' dark':'')+'" style="background:transparent">'+
+ [['Home',home()],['Attendance',att()],['Timing entry',tim()]].map(function(s){return '<div><div class="'+T.id+(d?' dark':'')+'" style="display:contents">'+s[1]+'</div><div class="cap">'+s[0]+'</div></div>'}).join('')+
+ '</div></section>';
+}
+function tabs(){var el=document.getElementById('tabs');
+ el.innerHTML=THEMES.map(function(t,i){return '<button role="tab" type="button" aria-selected="'+(i===cur)+'" data-i="'+i+'">'+(i+1)+'. '+t.name+'</button>'}).join('');
+ el.onclick=function(e){var b=e.target.closest('[role=tab]');if(!b)return;cur=+b.dataset.i;tabs();render();try{location.hash=THEMES[cur].id}catch(x){}}}
+document.getElementById('mLight').onclick=function(){mode[THEMES[cur].id]='light';render()};
+document.getElementById('mDark').onclick=function(){mode[THEMES[cur].id]='dark';render()};
+var h=(location.hash||'').slice(1);THEMES.forEach(function(t,i){if(t.id===h)cur=i});
+tabs();render();
+</script>
+</body>
+</html>

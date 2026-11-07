@@ -28,19 +28,38 @@ export default function CoachList() {
     }
   }
 
-  if (error) return <div className="rounded-lg bg-red-50 p-4 text-red-700">{error}</div>
+  if (error) return <div className="rounded-xl bg-red-50 p-4 text-red-700">{error}</div>
   if (!coaches) return <LoadingSpinner />
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-800">Coaches</h1>
-        <Link to="/coaches/new" className="flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 font-medium text-white hover:bg-sky-700">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-800">Coaches</h1>
+        <Link to="/coaches/new" className="flex items-center gap-2 rounded-full bg-sky-600 px-4 py-2 font-medium text-white hover:bg-sky-700">
           <Plus className="h-4 w-4" /> Add Assistant Coach
         </Link>
       </div>
 
-      <div className="overflow-x-auto rounded-xl bg-white shadow-sm">
+      <ul className="space-y-3 md:hidden">
+        {coaches.map((c) => (
+          <li key={c.id} className="flex items-center justify-between gap-3 rounded-2xl bg-white p-4 shadow-sm">
+            <div className="min-w-0">
+              <div className="truncate font-bold text-slate-800">{c.name}</div>
+              <div className="text-sm text-slate-500">{c.phone} · {c.role === 'head_coach' ? 'Head Coach' : 'Assistant'}</div>
+              <span className={`mt-1.5 inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${c.is_active ? 'bg-green-100 text-green-700' : 'bg-slate-200 text-slate-500'}`}>
+                {c.is_active ? 'Active' : 'Inactive'}
+              </span>
+            </div>
+            {c.role !== 'head_coach' && (
+              <button onClick={() => toggleActive(c)} className="shrink-0 rounded-full bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700">
+                {c.is_active ? 'Deactivate' : 'Activate'}
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      <div className="hidden overflow-x-auto rounded-2xl bg-white shadow-sm md:block">
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-slate-200 text-slate-500">

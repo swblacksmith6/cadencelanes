@@ -1,5 +1,124 @@
 @import "tailwindcss";
 
+/* Bundled so the installed app never waits on a font host. Latin only. */
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "DM Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("@fontsource/dm-mono/files/dm-mono-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "DM Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("@fontsource/dm-mono/files/dm-mono-latin-500-normal.woff2") format("woff2");
+}
+
+/*
+ * Tidepool theme. The app uses Tailwind's slate, sky, green, red and amber
+ * names everywhere, so the palette is swapped here instead of per class:
+ *   slate = sea-glass and forest neutrals, sky = violet accent,
+ *   green / red / amber = status colours tuned to sit on sea-glass.
+ */
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --color-slate-50: #f4f8f6;
+  --color-slate-100: #e8f0ec;
+  --color-slate-200: #d6e4dd;
+  --color-slate-300: #c0d4ca;
+  --color-slate-400: #7d978d;
+  --color-slate-500: #587a70;
+  --color-slate-600: #44645a;
+  --color-slate-700: #2a4a41;
+  --color-slate-800: #10332c;
+  --color-slate-900: #0b2621;
+  --color-slate-950: #081c18;
+
+  --color-sky-50: #f1eefe;
+  --color-sky-100: #e4defc;
+  --color-sky-200: #cdc2f8;
+  --color-sky-300: #b4a5f3;
+  --color-sky-400: #a18fff;
+  --color-sky-500: #7b60f0;
+  --color-sky-600: #5b3fd6;
+  --color-sky-700: #4b31b8;
+  --color-sky-800: #3b2790;
+  --color-sky-900: #2d1e70;
+
+  --color-green-50: #ecf7f1;
+  --color-green-100: #d5eddf;
+  --color-green-200: #b3dfc7;
+  --color-green-500: #2a9d6c;
+  --color-green-600: #1c8657;
+  --color-green-700: #166b46;
+
+  --color-red-50: #fbefee;
+  --color-red-100: #f6dcdb;
+  --color-red-200: #efc3c1;
+  --color-red-300: #e4a09d;
+  --color-red-400: #d77774;
+  --color-red-500: #cc4b48;
+  --color-red-600: #c13e3c;
+  --color-red-700: #a32f2d;
+
+  --color-amber-50: #fbf4e6;
+  --color-amber-100: #f6e8c6;
+  --color-amber-400: #e6a935;
+  --color-amber-500: #d4921a;
+  --color-amber-600: #b87a10;
+  --color-amber-700: #94600b;
+  --color-amber-800: #6f4708;
+
+  /* Softer, rounder shapes across every card, button and input. */
+  --radius-md: 0.75rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
+
+  --shadow-sm: 0 1px 2px rgb(16 51 44 / 0.06), 0 2px 8px -2px rgb(16 51 44 / 0.08);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background: var(--color-slate-100);
+    color: var(--color-slate-800);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+  /* 16px inputs stop iOS from zooming the page when a field is focused. */
+  input, select, textarea {
+    font-size: max(16px, 1em);
+  }
+  button, a { touch-action: manipulation; }
+  :focus-visible {
+    outline: 2px solid var(--color-sky-500);
+    outline-offset: 2px;
+  }
+}
+
+/* Keep fixed bars clear of the home indicator and notch on phones. */
+@utility pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+@utility pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+@utility px-safe {
+  padding-left: max(1rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1rem, env(safe-area-inset-right, 0px));
+}
+
 @media print {
   .no-print {
     display: none !important;

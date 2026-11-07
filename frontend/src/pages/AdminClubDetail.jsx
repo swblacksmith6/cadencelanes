@@ -52,13 +52,13 @@ export default function AdminClubDetail() {
   if (!club) return <div className="p-6"><LoadingSpinner /></div>
 
   return (
-    <div className="min-h-screen bg-slate-100 p-6">
+    <div className="min-h-dvh bg-slate-100 p-6">
       <div className="mx-auto max-w-2xl space-y-4">
         <Link to="/admin" className="text-sm text-sky-600 hover:underline">← All clubs</Link>
-        <div className="rounded-xl bg-white p-6 shadow-sm">
+        <div className="rounded-2xl bg-white p-6 shadow-sm">
           <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-slate-800">{club.name}</h1>
+              <h1 className="text-2xl font-extrabold tracking-tight text-slate-800">{club.name}</h1>
               <p className="mt-1 text-sm text-slate-500">
                 {club.head_coach_name} · {club.head_coach_phone}
               </p>
@@ -77,13 +77,13 @@ export default function AdminClubDetail() {
             }`}>{club.status}</span>
           </div>
 
-          {error && <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+          {error && <div className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
           <div className="mt-6 flex gap-3">
             {club.status === 'pending' && (
               <>
-                <button onClick={approve} className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700">Approve</button>
-                <button onClick={reject} className="rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600">Reject</button>
+                <button onClick={approve} className="rounded-full bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700">Approve</button>
+                <button onClick={reject} className="rounded-full bg-red-500 px-4 py-2 text-sm font-semibold text-white hover:bg-red-600">Reject</button>
               </>
             )}
             {club.status === 'approved' && (
@@ -92,7 +92,7 @@ export default function AdminClubDetail() {
           </div>
         </div>
 
-        <div className="rounded-xl bg-white p-6 shadow-sm">
+        <div className="rounded-2xl bg-white p-6 shadow-sm">
           <h2 className="mb-3 font-semibold text-slate-800">Users</h2>
           {(!club.users || club.users.length === 0) ? (
             <p className="text-sm text-slate-500">No users yet (created on approval).</p>
