@@ -30,7 +30,7 @@ MSG91 can answer HTTP 200 with `"type": "error"`, so the code checks the `type` 
 - Routes: `backend/routers/auth.py`. OTP and JWT logic: `backend/services/auth_service.py`. SMS: `backend/services/sms_service.py`.
 - Token checks and roles: `backend/middleware/auth.py`.
 - Frontend: `frontend/src/pages/Login.jsx`, `context/AuthContext.jsx`, `api/client.js` (401 logs out; `SESSION_REPLACED` also leaves a notice for the login page).
-- Status bar: `context/NoticeContext.jsx`. `useNotice().notify(text, 'info'|'warn'|'error')` shows a bar at the bottom of the screen for 10 seconds (dismissable; a newer message replaces it). Use it for any short info message. The login page says that signing in ends other devices' sessions; the new device is told "other device signed out", and the old device sees the bar after its next request fails.
+- Notice bar: `context/NoticeContext.jsx`. `useNotice().notify(text, 'info'|'success'|'error'|'warn')` shows one message for 10 seconds (dismissable; a newer one replaces it). Info is blue, success green, error red, warn amber. `<NoticeBar />` is the only place messages appear: a strip that takes no space until a message comes, then overlays the top of the page just under the top bar, and `<NoticeBar floating />` at the top of pages without the layout (login, register, admin). Pages send their `error` state to it with `useErrorNotice(error)`; do not add inline error boxes. The login page says that signing in ends other devices' sessions; the new device is told "other device signed out", and the old device sees the bar after its next request fails.
 - Tests: `backend/tests/test_auth.py`, `frontend/src/pages/Login.test.jsx`, `frontend/src/api/client.test.js`.
 
 ## Config

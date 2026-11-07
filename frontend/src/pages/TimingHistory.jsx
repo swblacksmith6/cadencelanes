@@ -4,6 +4,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContai
 import api from '../api/client.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import LoadingSpinner from '../components/LoadingSpinner.jsx'
+import { useErrorNotice } from '../context/NoticeContext.jsx'
 
 export default function TimingHistory() {
   const { id } = useParams()
@@ -15,6 +16,7 @@ export default function TimingHistory() {
   const [distanceId, setDistanceId] = useState('')
   const [timings, setTimings] = useState(null)
   const [error, setError] = useState('')
+  useErrorNotice(error)
 
   useEffect(() => {
     Promise.all([
@@ -37,7 +39,7 @@ export default function TimingHistory() {
     api.get(`/club/${user.club_id}/timings`, { params }).then((res) => setTimings(res.data))
   }, [id, styleId, distanceId, user.club_id])
 
-  if (error) return <div className="rounded-xl bg-red-50 p-4 text-red-700">{error}</div>
+  if (error) return <p className="py-12 text-center text-sm text-slate-500">This page could not load.</p>
   if (!student || !timings) return <LoadingSpinner />
 
   const chartData = [...timings]

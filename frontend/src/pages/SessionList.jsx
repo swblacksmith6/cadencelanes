@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Sunrise, Sunset, Trophy, Plus } from 'lucide
 import api from '../api/client.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import LoadingSpinner from '../components/LoadingSpinner.jsx'
+import { useErrorNotice } from '../context/NoticeContext.jsx'
 
 const iso = (d) => d.toISOString().slice(0, 10)
 
@@ -19,6 +20,7 @@ export default function SessionList() {
   const [date, setDate] = useState(iso(new Date()))
   const [sessions, setSessions] = useState(null)
   const [error, setError] = useState('')
+  useErrorNotice(error)
 
   const load = () => {
     setSessions(null)
@@ -71,7 +73,6 @@ export default function SessionList() {
         )}
       </div>
 
-      {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
       {!sessions ? (
         <LoadingSpinner />
       ) : (

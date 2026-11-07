@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import api from '../api/client.js'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useErrorNotice } from '../context/NoticeContext.jsx'
 
 const emptyContact = (isPrimary) => ({ relation: 'father', name: '', phone: '', is_primary: isPrimary })
 
@@ -17,6 +18,7 @@ export default function StudentForm() {
   const [contact2, setContact2] = useState(emptyContact(false))
   const [isActive, setIsActive] = useState(true)
   const [error, setError] = useState('')
+  useErrorNotice(error)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -62,7 +64,6 @@ export default function StudentForm() {
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       <h1 className="text-2xl font-extrabold tracking-tight text-slate-800">{isEdit ? 'Edit Student' : 'Add Student'}</h1>
-      {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
       <form onSubmit={submit} className="space-y-6">
         <section className="rounded-2xl bg-white p-5 shadow-sm">

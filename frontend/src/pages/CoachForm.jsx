@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../api/client.js'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useErrorNotice } from '../context/NoticeContext.jsx'
 
 export default function CoachForm() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const [form, setForm] = useState({ name: '', phone: '' })
   const [error, setError] = useState('')
+  useErrorNotice(error)
   const [loading, setLoading] = useState(false)
 
   const submit = async (e) => {
@@ -27,7 +29,6 @@ export default function CoachForm() {
   return (
     <div className="mx-auto max-w-md space-y-6">
       <h1 className="text-2xl font-extrabold tracking-tight text-slate-800">Add Assistant Coach</h1>
-      {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
       <form onSubmit={submit} className="space-y-4 rounded-2xl bg-white p-5 shadow-sm">
         <div>

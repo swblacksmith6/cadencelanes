@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import api from '../api/client.js'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useErrorNotice } from '../context/NoticeContext.jsx'
 
 const PRESET_TYPES = ['morning', 'evening', 'competition']
 
@@ -17,6 +18,7 @@ export default function SessionCreate() {
   const [customType, setCustomType] = useState('')
   const isCustom = form.session_type === '__custom__'
   const [error, setError] = useState('')
+  useErrorNotice(error)
   const [loading, setLoading] = useState(false)
 
   const submit = async (e) => {
@@ -41,7 +43,6 @@ export default function SessionCreate() {
   return (
     <div className="mx-auto max-w-md space-y-6">
       <h1 className="text-2xl font-extrabold tracking-tight text-slate-800">Create Session</h1>
-      {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
       <form onSubmit={submit} className="space-y-4 rounded-2xl bg-white p-5 shadow-sm">
         <div>

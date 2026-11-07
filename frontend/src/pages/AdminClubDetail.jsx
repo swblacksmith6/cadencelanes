@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import api from '../api/client.js'
 import LoadingSpinner from '../components/LoadingSpinner.jsx'
+import { NoticeBar, useErrorNotice } from '../context/NoticeContext.jsx'
 
 export default function AdminClubDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [club, setClub] = useState(null)
   const [error, setError] = useState('')
+  useErrorNotice(error)
 
   const load = () => {
     api
@@ -53,6 +55,7 @@ export default function AdminClubDetail() {
 
   return (
     <div className="min-h-dvh bg-slate-100 p-6">
+      <NoticeBar floating />
       <div className="mx-auto max-w-2xl space-y-4">
         <Link to="/admin" className="text-sm text-sky-600 hover:underline">← All clubs</Link>
         <div className="rounded-2xl bg-white p-6 shadow-sm">
@@ -77,7 +80,6 @@ export default function AdminClubDetail() {
             }`}>{club.status}</span>
           </div>
 
-          {error && <div className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
           <div className="mt-6 flex gap-3">
             {club.status === 'pending' && (

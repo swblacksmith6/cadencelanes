@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Waves } from 'lucide-react'
 import api from '../api/client.js'
 import { useAuth } from '../context/AuthContext.jsx'
-import { useNotice } from '../context/NoticeContext.jsx'
+import { NoticeBar, useErrorNotice, useNotice } from '../context/NoticeContext.jsx'
 
 export default function Login() {
   const [step, setStep] = useState(1)
@@ -11,6 +11,7 @@ export default function Login() {
   const [code, setCode] = useState('')
   const [otpHint, setOtpHint] = useState('')
   const [error, setError] = useState('')
+  useErrorNotice(error)
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
   const { notify } = useNotice()
@@ -49,13 +50,13 @@ export default function Login() {
 
   return (
     <div className="flex min-h-dvh items-center justify-center bg-slate-100 px-safe py-8">
+      <NoticeBar floating />
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-sm sm:p-8">
         <div className="mb-6 flex items-center justify-center gap-2 text-sky-600">
           <Waves className="h-7 w-7" />
           <span className="text-xl font-bold">Cadence Lanes</span>
         </div>
 
-        {error && <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
         {otpHint && step === 2 && (
           <div className="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
             MVP mode — your OTP is <span className="font-mono font-bold">{otpHint}</span>

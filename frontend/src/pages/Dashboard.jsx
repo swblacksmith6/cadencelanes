@@ -5,6 +5,7 @@ import api from '../api/client.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useMode } from '../context/ModeContext.jsx'
 import LoadingSpinner from '../components/LoadingSpinner.jsx'
+import { useErrorNotice } from '../context/NoticeContext.jsx'
 
 const today = () => new Date().toISOString().slice(0, 10)
 const daysAgo = (n) => {
@@ -21,6 +22,7 @@ export default function Dashboard() {
   const [todaySessions, setTodaySessions] = useState([])
   const [weekSessions, setWeekSessions] = useState([])
   const [error, setError] = useState('')
+  useErrorNotice(error)
 
   useEffect(() => {
     const load = async () => {
@@ -40,7 +42,7 @@ export default function Dashboard() {
     load()
   }, [user.club_id])
 
-  if (error) return <div className="rounded-xl bg-red-50 p-4 text-red-700">{error}</div>
+  if (error) return <p className="py-12 text-center text-sm text-slate-500">This page could not load.</p>
   if (!students) return <LoadingSpinner />
 
   const weekTotal = weekSessions.reduce((n, s) => n + s.total_count, 0)
@@ -104,7 +106,6 @@ export default function Dashboard() {
           <ChevronRight className="h-4 w-4 shrink-0 text-sky-200" />
         </button>
 
-        {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
       </div>
     )
   }

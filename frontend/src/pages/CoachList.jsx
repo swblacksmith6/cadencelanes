@@ -4,11 +4,13 @@ import { Plus } from 'lucide-react'
 import api from '../api/client.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import LoadingSpinner from '../components/LoadingSpinner.jsx'
+import { useErrorNotice } from '../context/NoticeContext.jsx'
 
 export default function CoachList() {
   const { user } = useAuth()
   const [coaches, setCoaches] = useState(null)
   const [error, setError] = useState('')
+  useErrorNotice(error)
 
   const load = () => {
     api
@@ -28,7 +30,7 @@ export default function CoachList() {
     }
   }
 
-  if (error) return <div className="rounded-xl bg-red-50 p-4 text-red-700">{error}</div>
+  if (error) return <p className="py-12 text-center text-sm text-slate-500">This page could not load.</p>
   if (!coaches) return <LoadingSpinner />
 
   return (

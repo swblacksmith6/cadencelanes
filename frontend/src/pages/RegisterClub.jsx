@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Waves, CheckCircle } from 'lucide-react'
 import api from '../api/client.js'
+import { NoticeBar, useErrorNotice } from '../context/NoticeContext.jsx'
 
 export default function RegisterClub() {
   const [form, setForm] = useState({ name: '', head_coach_name: '', head_coach_phone: '' })
   const [error, setError] = useState('')
+  useErrorNotice(error)
   const [done, setDone] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -26,6 +28,7 @@ export default function RegisterClub() {
   if (done) {
     return (
       <div className="flex min-h-dvh items-center justify-center bg-slate-100 px-safe py-8">
+      <NoticeBar floating />
         <div className="w-full max-w-sm rounded-2xl bg-white p-8 text-center shadow">
           <CheckCircle className="mx-auto mb-4 h-12 w-12 text-green-500" />
           <h2 className="text-lg font-semibold text-slate-800">Registration submitted!</h2>
@@ -38,13 +41,13 @@ export default function RegisterClub() {
 
   return (
     <div className="flex min-h-dvh items-center justify-center bg-slate-100 px-safe py-8">
+      <NoticeBar floating />
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-sm sm:p-8">
         <div className="mb-6 flex items-center justify-center gap-2 text-sky-600">
           <Waves className="h-7 w-7" />
           <span className="text-xl font-bold">Register Your Club</span>
         </div>
 
-        {error && <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
         <form onSubmit={submit} className="space-y-4">
           <div>

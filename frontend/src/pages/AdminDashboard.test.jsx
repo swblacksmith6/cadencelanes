@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import api from '../api/client.js'
 import { AuthProvider } from '../context/AuthContext.jsx'
+import { NoticeProvider } from '../context/NoticeContext.jsx'
 import AdminDashboard from './AdminDashboard.jsx'
 
 vi.mock('../api/client.js', () => ({ default: { get: vi.fn(), post: vi.fn(), delete: vi.fn() } }))
@@ -11,9 +12,11 @@ vi.mock('../api/client.js', () => ({ default: { get: vi.fn(), post: vi.fn(), del
 const setup = () =>
   render(
     <AuthProvider>
-      <MemoryRouter>
-        <AdminDashboard />
-      </MemoryRouter>
+      <NoticeProvider>
+        <MemoryRouter>
+          <AdminDashboard />
+        </MemoryRouter>
+      </NoticeProvider>
     </AuthProvider>
   )
 
@@ -55,7 +58,7 @@ describe('AdminDashboard add club', () => {
     expect(screen.queryByPlaceholderText('Club name')).toBeNull()
   })
 
-  it('shows the server error and keeps the form open', async () => {
+  it('shows the server error in the notice bar and keeps the form open', async () => {
     api.post.mockRejectedValueOnce({ response: { data: { detail: 'Phone is already registered' } } })
     setup()
     await fillForm()

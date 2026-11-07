@@ -4,6 +4,7 @@ import { Waves, LogOut, Plus } from 'lucide-react'
 import api from '../api/client.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import LoadingSpinner from '../components/LoadingSpinner.jsx'
+import { NoticeBar, useErrorNotice } from '../context/NoticeContext.jsx'
 
 const TABS = ['pending', 'approved', 'rejected', 'all']
 
@@ -19,6 +20,7 @@ export default function AdminDashboard() {
   const [tab, setTab] = useState('pending')
   const [clubs, setClubs] = useState(null)
   const [error, setError] = useState('')
+  useErrorNotice(error)
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({ name: '', head_coach_name: '', head_coach_phone: '' })
   const [saving, setSaving] = useState(false)
@@ -83,6 +85,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-dvh bg-slate-100">
+      <NoticeBar floating />
       <header className="flex items-center justify-between bg-slate-800 px-6 py-3 text-white">
         <div className="flex items-center gap-2">
           <Waves className="h-6 w-6 text-sky-400" />
@@ -133,7 +136,6 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
         {!clubs ? (
           <LoadingSpinner />

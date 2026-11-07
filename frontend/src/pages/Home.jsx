@@ -1,6 +1,7 @@
 import { Link, Navigate } from 'react-router-dom'
 import { Waves } from 'lucide-react'
 import { useAuth } from '../context/AuthContext.jsx'
+import { NoticeBar } from '../context/NoticeContext.jsx'
 
 export default function Home() {
   const { user } = useAuth()
@@ -8,6 +9,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center bg-slate-800 px-6 pt-safe pb-safe text-center text-white">
+      <NoticeBar floating />
       <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-sky-600/90"><Waves className="h-12 w-12 text-white" /></div>
       <h1 className="text-4xl font-extrabold tracking-tight">Cadence Lanes</h1>
       <p className="mt-2 text-slate-300">Track every lap. Grow every swimmer.</p>

@@ -38,6 +38,7 @@ Use `get_logger("app.<area>")` and `log_event(log, logging.LEVEL, "event_name", 
 - Everything needs the internet. Do not add offline caching of API data or a write queue (see [decisions.md](decisions.md)).
 - Styling is Tailwind utility classes. Icons from `lucide-react`.
 - Theme is Tidepool, defined once in `frontend/src/index.css` under `@theme`. The classes keep Tailwind's names but the colours are remapped: `slate-*` are the sea-glass and forest neutrals, `sky-*` is the violet accent, `green/red/amber-*` are the status colours. Use those names; do not add hex colours in components (chart strokes are the exception: violet `#5b3fd6`, grid `#d6e4dd`).
+- Messages: all feedback (errors, saved, info) goes to the notice bar under the top bar, never inline. Call `notify(text, kind)` or `useErrorNotice(error)`; see [features/auth-otp-msg91.md](features/auth-otp-msg91.md).
 - Fonts are Plus Jakarta Sans and DM Mono, bundled from `@fontsource` (no font host).
 - Phone first: use `md:` to widen. Lists with many columns render as cards under `md` and as a table from `md` up. Use `px-safe`, `pt-safe`, `pb-safe` for fixed bars and `min-h-dvh` instead of `min-h-screen`.
 
