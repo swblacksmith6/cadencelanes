@@ -17,6 +17,7 @@ import TimingHistory from './pages/TimingHistory.jsx'
 import ProgressReport from './pages/ProgressReport.jsx'
 import AdminDashboard from './pages/AdminDashboard.jsx'
 import AdminClubDetail from './pages/AdminClubDetail.jsx'
+import Profile from './pages/Profile.jsx'
 import OfflineScreen from './components/OfflineScreen.jsx'
 
 export default function App() {
@@ -42,6 +43,7 @@ export default function App() {
           <Route path="/sessions/new" element={<SessionCreate />} />
           <Route path="/sessions/:id/attendance" element={<AttendanceView />} />
           <Route path="/timings/entry" element={<TimingEntry />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
       </Route>
 

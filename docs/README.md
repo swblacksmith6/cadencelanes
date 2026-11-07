@@ -24,5 +24,6 @@ Context for people and coding agents working on this repo. These docs describe w
 | [features/sessions-attendance.md](features/sessions-attendance.md) | Sessions and attendance |
 | [features/timings-pbs.md](features/timings-pbs.md) | Timing entry and personal bests |
 | [features/progress-reports.md](features/progress-reports.md) | Per-student progress report |
+| [features/profile-settings.md](features/profile-settings.md) | Avatar in the top bar, profile screen, text size and layout settings, log out |
 | [features/pwa-offline.md](features/pwa-offline.md) | Installable app and the offline screen |
 | [features/demo-seed.md](features/demo-seed.md) | The demo school and `seed_demo.py` |

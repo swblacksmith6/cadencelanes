@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Plus, Search } from 'lucide-react'
+import { MessageCircle, MessageSquare, Pencil, Phone, Plus, Search, Timer, TrendingUp } from 'lucide-react'
 import api from '../api/client.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import LoadingSpinner from '../components/LoadingSpinner.jsx'
 import { exactAge } from '../utils/age.js'
+import { smsHref, telHref, whatsappHref } from '../utils/phone.js'
 import { useErrorNotice } from '../context/NoticeContext.jsx'
 
 export default function StudentList() {
@@ -60,13 +61,41 @@ export default function StudentList() {
                   {s.is_active ? 'Active' : 'Inactive'}
                 </span>
               </div>
-              <div className="mt-0.5 truncate text-xs text-slate-600">
-                {primary ? `${primary.name || primary.relation} · ${primary.phone}` : '—'}
+              <div className="mt-1 flex items-center justify-between gap-2">
+                <div className="min-w-0 truncate text-xs text-slate-600">
+                  {primary ? `${primary.name || primary.relation} · ${primary.phone}` : '—'}
+                </div>
+                {primary && (
+                  <div className="flex shrink-0 gap-1.5">
+                    <a href={telHref(primary.phone)} aria-label={`Call ${primary.name || primary.relation}`} title="Call"
+                      className="flex h-8 w-8 items-center justify-center rounded-full bg-sky-50 text-sky-700">
+                      <Phone className="h-4 w-4" />
+                    </a>
+                    <a href={whatsappHref(primary.phone)} target="_blank" rel="noopener noreferrer"
+                      aria-label={`WhatsApp ${primary.name || primary.relation}`} title="WhatsApp"
+                      className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-green-700">
+                      <MessageCircle className="h-4 w-4" />
+                    </a>
+                    <a href={smsHref(primary.phone)} aria-label={`Text message ${primary.name || primary.relation}`} title="Text message"
+                      className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-600">
+                      <MessageSquare className="h-4 w-4" />
+                    </a>
+                  </div>
+                )}
               </div>
-              <div className="mt-1.5 flex gap-1.5 text-xs font-semibold">
-                <Link to={`/students/${s.id}/progress`} className="flex-1 rounded-full bg-sky-50 py-1 text-center text-sky-700">Progress</Link>
-                <Link to={`/students/${s.id}/timings`} className="flex-1 rounded-full bg-sky-50 py-1 text-center text-sky-700">Timings</Link>
-                <Link to={`/students/${s.id}/edit`} className="flex-1 rounded-full bg-slate-100 py-1 text-center text-slate-600">Edit</Link>
+              <div className="mt-1.5 flex gap-1.5">
+                <Link to={`/students/${s.id}/progress`} aria-label={`Progress for ${s.name}`} title="Progress"
+                  className="flex flex-1 items-center justify-center rounded-full bg-sky-50 py-1.5 text-sky-700">
+                  <TrendingUp className="h-4 w-4" />
+                </Link>
+                <Link to={`/students/${s.id}/timings`} aria-label={`Timings for ${s.name}`} title="Timings"
+                  className="flex flex-1 items-center justify-center rounded-full bg-sky-50 py-1.5 text-sky-700">
+                  <Timer className="h-4 w-4" />
+                </Link>
+                <Link to={`/students/${s.id}/edit`} aria-label={`Edit ${s.name}`} title="Edit"
+                  className="flex flex-1 items-center justify-center rounded-full bg-slate-100 py-1.5 text-slate-600">
+                  <Pencil className="h-4 w-4" />
+                </Link>
               </div>
             </li>
           )

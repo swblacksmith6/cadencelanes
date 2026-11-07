@@ -1,15 +1,20 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet } from 'react-router-dom'
 import {
-  LayoutDashboard, Users, CalendarDays, Timer, UserCog, LogOut, Waves, Home,
+  LayoutDashboard, Users, CalendarDays, Timer, UserCog, Waves, Home,
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useMode } from '../context/ModeContext.jsx'
-import ModeSwitch from './ModeSwitch.jsx'
+import { initials } from '../pages/Profile.jsx'
 import { NoticeBar } from '../context/NoticeContext.jsx'
 
 const sideLink = ({ isActive }) =>
   `flex items-center gap-3 rounded-full px-4 py-2.5 text-sm font-semibold transition ${
     isActive ? 'bg-sky-600 text-white' : 'text-slate-300 hover:bg-white/10 hover:text-white'
+  }`
+
+const avatarLink = ({ isActive }) =>
+  `flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold transition ${
+    isActive ? 'bg-sky-400 text-slate-900 ring-2 ring-white/60' : 'bg-sky-600 text-white hover:bg-sky-500'
   }`
 
 const tabLink = ({ isActive }) =>
@@ -18,14 +23,8 @@ const tabLink = ({ isActive }) =>
   }`
 
 export default function Layout() {
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
   const { mode } = useMode()
-  const navigate = useNavigate()
-
-  const handleLogout = () => {
-    logout()
-    navigate('/login')
-  }
 
   // ── Coach mode: compact top bar + floating bottom tabs, built for poolside phones ──
   if (mode === 'coach') {
@@ -37,13 +36,9 @@ export default function Layout() {
               <Waves className="h-5 w-5 shrink-0 text-sky-400" />
               <span className="truncate text-sm font-extrabold tracking-tight">{user?.club_name || 'Cadence Lanes'}</span>
             </div>
-            <div className="flex shrink-0 items-center gap-1">
-              <ModeSwitch dark />
-              <button onClick={handleLogout} aria-label="Log out"
-                className="flex h-10 w-10 items-center justify-center rounded-full text-slate-300 hover:bg-white/10 hover:text-white">
-                <LogOut className="h-4 w-4" />
-              </button>
-            </div>
+            <NavLink to="/profile" aria-label="Profile and settings" className={avatarLink}>
+              {initials(user?.name)}
+            </NavLink>
           </div>
           <div className="px-safe pointer-events-none absolute inset-x-0 top-full pt-2">
             <div className="pointer-events-auto"><NoticeBar /></div>
@@ -111,15 +106,9 @@ export default function Layout() {
               {user?.name} · {user?.role === 'head_coach' ? 'Head Coach' : 'Assistant Coach'}
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <ModeSwitch />
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-600 hover:bg-slate-100"
-            >
-              <LogOut className="h-4 w-4" /> Logout
-            </button>
-          </div>
+          <NavLink to="/profile" aria-label="Profile and settings" className={avatarLink}>
+            {initials(user?.name)}
+          </NavLink>
         <div className="pointer-events-none absolute inset-x-0 top-full px-6 pt-2">
             <div className="pointer-events-auto"><NoticeBar /></div>
           </div>
