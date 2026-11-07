@@ -12,6 +12,7 @@ Context for people and coding agents working on this repo. These docs describe w
 | [operations.md](operations.md) | You are running, deploying or configuring the app (env vars live here) |
 | [testing-and-logs.md](testing-and-logs.md) | You are debugging a failure or writing tests |
 | [decisions.md](decisions.md) | You wonder why something is the way it is |
+| [presentation/README.md](presentation/README.md) | You are building a deck or launch video: product brief, brand, copy, outline, script, screenshots |
 
 ## Features
 
