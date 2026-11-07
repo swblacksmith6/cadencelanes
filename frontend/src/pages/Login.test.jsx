@@ -64,4 +64,14 @@ describe('Login', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Verify & Login' }))
     expect(await screen.findByRole('status')).toHaveTextContent('other signed-in device has been signed out')
   })
+
+  it('uses the numeric keyboard for the OTP and lets the phone fill it from SMS', async () => {
+    api.post.mockResolvedValueOnce({ data: { message: 'OTP sent' } })
+    setup()
+    await userEvent.type(screen.getByPlaceholderText('10-digit phone'), '9800000001')
+    await userEvent.click(screen.getByRole('button', { name: 'Send OTP' }))
+    const code = await screen.findByPlaceholderText('6-digit code')
+    expect(code).toHaveAttribute('inputmode', 'numeric')
+    expect(code).toHaveAttribute('autocomplete', 'one-time-code')
+  })
 })

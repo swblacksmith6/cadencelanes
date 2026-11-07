@@ -93,6 +93,9 @@ export default function Login() {
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 placeholder="6-digit code"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                autoComplete="one-time-code"
                 required
                 maxLength={6}
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-center font-mono text-lg tracking-widest focus:border-sky-500 focus:outline-none"
