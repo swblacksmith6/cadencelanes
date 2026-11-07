@@ -22,7 +22,7 @@ api.interceptors.response.use(
       localStorage.removeItem('user')
       if (err.response.data?.detail === 'SESSION_REPLACED') {
         try {
-          sessionStorage.setItem(FLASH_KEY, JSON.stringify({ message: SESSION_REPLACED_TEXT, kind: 'warn' }))
+          sessionStorage.setItem(FLASH_KEY, JSON.stringify({ message: SESSION_REPLACED_TEXT, kind: 'info' }))
         } catch {
           // storage unavailable: the redirect still happens
         }

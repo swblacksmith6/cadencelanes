@@ -4,6 +4,7 @@ import api from '../api/client.js'
 import { exactAge } from '../utils/age.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import LoadingSpinner from '../components/LoadingSpinner.jsx'
+import { useErrorNotice } from '../context/NoticeContext.jsx'
 
 const today = () => new Date().toISOString().slice(0, 10)
 
@@ -36,6 +37,7 @@ export default function TimingEntry() {
   const [rows, setRows] = useState([]) // {student_id, student_name, input, saved:{time,isPB,improvement}|null, error}
   const [sessionTimings, setSessionTimings] = useState([])
   const [error, setError] = useState('')
+  useErrorNotice(error)
   const inputRefs = useRef({})
 
   // Load today's sessions + reference data; auto-pick the current session
@@ -126,7 +128,7 @@ export default function TimingEntry() {
     }
   }
 
-  if (error && !sessions) return <div className="rounded-xl bg-red-50 p-4 text-red-700">{error}</div>
+  if (error && !sessions) return <p className="py-12 text-center text-sm text-slate-500">This page could not load.</p>
   if (!sessions) return <LoadingSpinner />
 
   // previous times already recorded in this session for the selected style+distance
@@ -139,21 +141,20 @@ export default function TimingEntry() {
   const distance = distances.find((d) => d.id === distanceId)
 
   return (
-    <div className="mx-auto max-w-lg space-y-5">
-      <h1 className="text-2xl font-extrabold tracking-tight text-slate-800">Record Timings</h1>
-      {error && <div className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+    <div className="mx-auto max-w-lg space-y-2.5">
+      <h1 className="text-lg font-bold tracking-tight text-slate-800">Record Timings</h1>
 
       {/* Session — auto-picked, tap to switch */}
       {sessions.length === 0 ? (
-        <div className="rounded-2xl bg-white p-5 shadow-sm">
-          <p className="mb-3 text-sm text-slate-600">No session today yet. Start one:</p>
+        <div className="rounded-xl bg-white p-3 shadow-sm">
+          <p className="mb-2 text-sm text-slate-600">No session today yet. Start one:</p>
           <div className="flex gap-3">
             <button onClick={() => createSession('morning')}
-              className="flex items-center gap-2 rounded-full bg-amber-500 px-4 py-2.5 font-medium text-white hover:bg-amber-600">
+              className="flex items-center gap-2 rounded-full bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600">
               <Sunrise className="h-4 w-4" /> Morning
             </button>
             <button onClick={() => createSession('evening')}
-              className="flex items-center gap-2 rounded-full bg-indigo-500 px-4 py-2.5 font-medium text-white hover:bg-indigo-600">
+              className="flex items-center gap-2 rounded-full bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600">
               <Sunset className="h-4 w-4" /> Evening
             </button>
           </div>
@@ -162,7 +163,7 @@ export default function TimingEntry() {
         <div className="flex flex-wrap gap-2">
           {sessions.map((s) => (
             <button key={s.id} onClick={() => setSessionId(s.id)}
-              className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium capitalize transition ${
+              className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium capitalize transition ${
                 s.id === sessionId ? 'bg-sky-600 text-white' : 'bg-white text-slate-600 shadow-sm hover:bg-slate-50'
               }`}>
               {sessionIcon(s.session_type)} Today · {s.session_type}
@@ -172,21 +173,21 @@ export default function TimingEntry() {
       )}
 
       {/* Set: style + distance chosen once, remembered */}
-      <div className="rounded-2xl bg-white p-4 shadow-sm">
-        <div className="mb-2 flex flex-wrap gap-2">
+      <div className="rounded-xl bg-white p-2.5 shadow-sm">
+        <div className="mb-1.5 flex flex-wrap gap-1.5">
           {styles.map((s) => (
             <button key={s.id} onClick={() => pickStyle(s.id)}
-              className={`min-w-12 rounded-lg px-3 py-2.5 text-sm font-bold transition ${
+              className={`min-w-10 rounded-lg px-2.5 py-1.5 text-xs font-bold transition ${
                 s.id === styleId ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}>
               {s.short_code}
             </button>
           ))}
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {distances.map((d) => (
             <button key={d.id} onClick={() => pickDistance(d.id)}
-              className={`rounded-lg px-3 py-2.5 text-sm font-bold transition ${
+              className={`rounded-lg px-2.5 py-1.5 text-xs font-bold transition ${
                 d.id === distanceId ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}>
               {d.label}
@@ -194,7 +195,7 @@ export default function TimingEntry() {
           ))}
         </div>
         {style && distance && (
-          <p className="mt-3 text-sm font-medium text-slate-500">
+          <p className="mt-2 text-xs font-medium text-slate-500">
             Set: {style.name} {distance.label} — type each time and press Enter
           </p>
         )}
@@ -206,22 +207,22 @@ export default function TimingEntry() {
           {rows.map((row, idx) => {
             const prior = priorFor(row.student_id)
             return (
-              <div key={row.student_id} className="flex items-center gap-3 px-4 py-3">
+              <div key={row.student_id} className="flex items-center gap-2 px-3 py-1.5">
                 <div className="min-w-0 flex-1">
-                  <div className="truncate font-medium text-slate-800">{row.student_name}</div>
-                  <div className="text-xs text-slate-400">{exactAge(row.date_of_birth)}</div>
+                  <div className="truncate text-sm font-medium text-slate-800">{row.student_name}</div>
+                  <div className="text-[11px] leading-tight text-slate-400">{exactAge(row.date_of_birth)}</div>
                   {row.saved ? (
-                    <div className="flex items-center gap-1.5 text-sm">
+                    <div className="flex items-center gap-1.5 text-xs">
                       <span className="font-mono text-slate-600">{row.saved.time}s saved</span>
                       {row.saved.isPB && (
                         <span className="flex items-center gap-1 font-medium text-green-600">
-                          <PartyPopper className="h-4 w-4" />
+                          <PartyPopper className="h-3.5 w-3.5" />
                           PB{row.saved.improvement ? ` −${row.saved.improvement}s` : ''}
                         </span>
                       )}
                     </div>
                   ) : prior.length > 0 ? (
-                    <div className="text-xs text-slate-400">this session: {prior.join('s, ')}s</div>
+                    <div className="text-[11px] leading-tight text-slate-400">this session: {prior.join('s, ')}s</div>
                   ) : null}
                 </div>
                 <input
@@ -233,12 +234,12 @@ export default function TimingEntry() {
                     setRows((r) => r.map((x, i) => (i === idx ? { ...x, input: e.target.value, error: false } : x)))
                   }
                   onKeyDown={(e) => e.key === 'Enter' && save(idx)}
-                  className={`w-24 rounded-lg border px-3 py-2.5 text-right font-mono text-base focus:outline-none ${
+                  className={`w-20 rounded-lg border px-2.5 py-1.5 text-right font-mono text-base focus:outline-none ${
                     row.error ? 'border-red-400 bg-red-50' : 'border-slate-300 focus:border-sky-500'
                   }`}
                 />
                 <button onClick={() => save(idx)} disabled={!row.input}
-                  className="rounded-full bg-sky-600 p-2.5 text-white hover:bg-sky-700 disabled:opacity-30">
+                  className="rounded-full bg-sky-600 p-1.5 text-white hover:bg-sky-700 disabled:opacity-30">
                   <Check className="h-5 w-5" />
                 </button>
               </div>

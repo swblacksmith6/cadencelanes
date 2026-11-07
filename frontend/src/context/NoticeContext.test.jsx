@@ -1,14 +1,19 @@
 import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { FLASH_KEY, NOTICE_MS, NoticeProvider, useNotice } from './NoticeContext.jsx'
+import { FLASH_KEY, NOTICE_MS, NoticeBar, NoticeProvider, useErrorNotice, useNotice } from './NoticeContext.jsx'
 
 function Trigger({ text = 'Saved', kind }) {
   const { notify } = useNotice()
   return <button onClick={() => notify(text, kind)}>go</button>
 }
 
-const setup = (props) => render(<NoticeProvider><Trigger {...props} /></NoticeProvider>)
+const setup = (props) => render(<NoticeProvider><NoticeBar /><Trigger {...props} /></NoticeProvider>)
+
+function ErrorSource({ error }) {
+  useErrorNotice(error)
+  return null
+}
 
 describe('status bar', () => {
   beforeEach(() => vi.useFakeTimers({ shouldAdvanceTime: true }))
@@ -51,5 +56,34 @@ describe('status bar', () => {
     setup()
     expect(screen.getByRole('status')).toHaveTextContent('Signed out elsewhere')
     expect(sessionStorage.getItem(FLASH_KEY)).toBeNull()
+  })
+
+  it('colours info blue, success green and error red', () => {
+    const cases = [['info', 'bg-blue-50'], ['success', 'bg-green-100'], ['error', 'bg-red-50']]
+    for (const [kind, cls] of cases) {
+      const { unmount } = setup({ kind })
+      act(() => screen.getByText('go').click())
+      expect(screen.getByRole('status').className).toContain(cls)
+      unmount()
+    }
+  })
+
+  it('an info message is the default kind', () => {
+    setup()
+    act(() => screen.getByText('go').click())
+    expect(screen.getByRole('status').className).toContain('bg-blue-50')
+  })
+
+  it('takes no space when there is no message', () => {
+    const { container } = setup()
+    expect(container.querySelector('.h-12')).toBeNull()
+    expect(screen.queryByRole('status')).toBeNull()
+  })
+
+  it('shows a page error in the bar as an error', () => {
+    render(<NoticeProvider><NoticeBar /><ErrorSource error="Failed to save" /></NoticeProvider>)
+    const bar = screen.getByRole('status')
+    expect(bar).toHaveTextContent('Failed to save')
+    expect(bar.className).toContain('bg-red-50')
   })
 })

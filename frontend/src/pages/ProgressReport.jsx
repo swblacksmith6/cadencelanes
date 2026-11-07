@@ -6,6 +6,7 @@ import api from '../api/client.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import LoadingSpinner from '../components/LoadingSpinner.jsx'
 import { exactAge } from '../utils/age.js'
+import { useErrorNotice } from '../context/NoticeContext.jsx'
 
 const RATING_LABELS = { 1: 'Beginner', 2: 'Elementary', 3: 'Intermediate', 4: 'Advanced', 5: 'Elite' }
 
@@ -22,6 +23,7 @@ export default function ProgressReport() {
   const { user } = useAuth()
   const [report, setReport] = useState(null)
   const [error, setError] = useState('')
+  useErrorNotice(error)
   const [trendKey, setTrendKey] = useState('')
   const [noteText, setNoteText] = useState('')
   const [noteCategory, setNoteCategory] = useState('general')
@@ -100,7 +102,7 @@ export default function ProgressReport() {
     }
   }
 
-  if (error && !report) return <div className="rounded-xl bg-red-50 p-4 text-red-700">{error}</div>
+  if (error && !report) return <p className="py-12 text-center text-sm text-slate-500">This page could not load.</p>
   if (!report) return <LoadingSpinner />
 
   const { student, attendance, personal_bests, timing_trends, skill_ratings, recent_notes } = report
@@ -283,7 +285,6 @@ export default function ProgressReport() {
           </div>
         </form>
 
-        {error && <div className="no-print mb-3 rounded-xl bg-red-50 p-2 text-sm text-red-700">{error}</div>}
         {recent_notes.length === 0 ? (
           <p className="text-sm text-slate-500">No notes yet.</p>
         ) : (

@@ -5,6 +5,7 @@ import {
 import { useAuth } from '../context/AuthContext.jsx'
 import { useMode } from '../context/ModeContext.jsx'
 import ModeSwitch from './ModeSwitch.jsx'
+import { NoticeBar } from '../context/NoticeContext.jsx'
 
 const sideLink = ({ isActive }) =>
   `flex items-center gap-3 rounded-full px-4 py-2.5 text-sm font-semibold transition ${
@@ -44,16 +45,19 @@ export default function Layout() {
               </button>
             </div>
           </div>
+          <div className="px-safe pointer-events-none absolute inset-x-0 top-full pt-2">
+            <div className="pointer-events-auto"><NoticeBar /></div>
+          </div>
         </header>
 
-        <main className="px-safe flex-1 pt-5 pb-28">
+        <main className="px-safe flex-1 pt-4 pb-28">
           <Outlet />
         </main>
 
         <nav className="no-print pointer-events-none fixed inset-x-0 bottom-0 z-20 pb-safe">
           <div className="pointer-events-auto mx-3 mb-3 flex gap-1 rounded-full border border-slate-200 bg-white/95 p-1.5 shadow-lg backdrop-blur md:mx-auto md:max-w-md">
             <NavLink to="/dashboard" className={tabLink}>
-              <Home className="h-5 w-5" /> Today
+              <Home className="h-5 w-5" /> Home
             </NavLink>
             <NavLink to="/sessions" className={tabLink}>
               <CalendarDays className="h-5 w-5" /> Sessions
@@ -100,7 +104,7 @@ export default function Layout() {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="no-print flex items-center justify-between border-b border-slate-200 bg-white px-6 py-3">
+        <header className="no-print relative z-20 flex items-center justify-between border-b border-slate-200 bg-white px-6 py-3">
           <div>
             <div className="font-semibold text-slate-800">{user?.club_name || 'My Club'}</div>
             <div className="text-xs text-slate-500">
@@ -115,6 +119,9 @@ export default function Layout() {
             >
               <LogOut className="h-4 w-4" /> Logout
             </button>
+          </div>
+        <div className="pointer-events-none absolute inset-x-0 top-full px-6 pt-2">
+            <div className="pointer-events-auto"><NoticeBar /></div>
           </div>
         </header>
         <main className="flex-1 p-6">
